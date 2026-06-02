@@ -1,242 +1,273 @@
-# HTML Anything · TraceCanvas
+<p align="center">
+  <img src="docs/assets/banner.png" alt="TraceCanvas Banner" width="800" />
+</p>
 
-**The agentic HTML editor.** Paste structured data (CSV, JSON, Markdown, SQL), pick a skill template, and your local coding agent generates a world-class HTML document — with source-grounding annotations, verification, and one-click export.
+<p align="center">
+  <a href="https://github.com/kenny2077/TraceCanvas/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg" alt="License" /></a>
+  <a href="https://github.com/kenny2077/TraceCanvas"><img src="https://img.shields.io/badge/version-0.4.1-green.svg" alt="Version" /></a>
+  <a href="CONTRIBUTING.md"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome" /></a>
+  <a href="https://nextjs.org"><img src="https://img.shields.io/badge/Next.js-16-black" alt="Next.js" /></a>
+  <a href="https://react.dev"><img src="https://img.shields.io/badge/React-19-61dafb" alt="React" /></a>
+</p>
 
-> Built on the TraceCanvas trust pipeline: source parsing → prompt assembly → agent generation → HTML extraction → verification → repair → export.
-
----
-
-## Architecture
-
-```
-┌──────────────┐    ┌─────────────────┐    ┌──────────────────┐
-│  User Input   │───▶│  Format Parser   │───▶│  Prompt Assembly  │
-│  (textarea)   │    │  parsers/auto.ts │    │  templates/       │
-└──────────────┘    └─────────────────┘    └────────┬─────────┘
-                                                     │
-                                              ┌──────▼─────────┐
-                                              │  Agent Invoke   │
-                                              │  agents/invoke  │
-                                              │  (child_process) │
-                                              └──────┬─────────┘
-                                                     │ SSE stream
-                                              ┌──────▼─────────┐
-                                              │  HTML Extract   │
-                                              │  extract-html   │
-                                              └──────┬─────────┘
-                                                     │
-                                     ┌───────────────┼───────────────┐
-                                     │               │               │
-                              ┌──────▼──────┐ ┌──────▼──────┐ ┌──────▼──────┐
-                              │  Verify      │ │  Repair      │ │  Export     │
-                              │  verify/     │ │  repair/     │ │  export/    │
-                              └─────────────┘ └─────────────┘ └─────────────┘
-```
-
-### Pipeline stages
-
-| Stage | Module | Description |
-|-------|--------|-------------|
-| **Source Parsing** | `lib/parsers/` | Format detection (8 types), CSV/TSV/JSON parsing with PapaParse, A1 cell ID generation |
-| **Prompt Assembly** | `lib/templates/` | 85+ skill templates with SKILL.md frontmatter, shared design directives, diff-edit mode |
-| **Agent Generation** | `lib/agents/` | 17 agent CLI adapters (Claude, Codex, Gemini, DeepSeek, Kimi, etc.), hardened with timeout/error categorization |
-| **HTML Extraction** | `lib/extract-html.ts` | Regex-based HTML rescue from chatty agent output |
-| **Verification** | `lib/verify/`, `lib/html/` | 10 checks: HTML structure, security (script/event/js:), DOMPurify sanitization, source-key coverage/validity, content fidelity |
-| **Repair** | `lib/repair/` | Conservative auto-fix: strip attribute fragments, close unclosed tags |
-| **Export** | `lib/export/` | 12 targets: WeChat, Zhihu, Bilibili, Notion, Mastodon, Bluesky, clipboard, download, PNG, PPTX, PDF, Remotion ZIP |
+<p align="center">
+  <b>The agentic HTML editor.</b><br/>
+  Paste structured data → your local coding agent generates world-class HTML<br/>
+  with source-grounding, verification, and one-click export.
+</p>
 
 ---
 
-## Quick Start
+## 📸 Demo
+
+<p align="center">
+  <img src="docs/screenshots/01-entry-view.png" alt="Entry View" width="400" />
+  <img src="docs/screenshots/02-template-picker.png" alt="Template Picker" width="400" />
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/03-streaming.png" alt="Streaming Generation" width="400" />
+  <img src="docs/screenshots/04-export.png" alt="Export Menu" width="400" />
+</p>
+
+---
+
+## 🚀 Quick Start
 
 ```bash
-# Prerequisites: Node.js 20+, pnpm, and at least one coding agent CLI
-# (Claude Code, Codex CLI, Gemini CLI, etc.)
-
+# 1. Clone
 git clone https://github.com/kenny2077/TraceCanvas.git
 cd TraceCanvas/html-anything-main
 
+# 2. Install
 pnpm install --frozen-lockfile
+
+# 3. Start
 pnpm -F @html-anything/next dev
 ```
 
-Open `http://localhost:3000`. The welcome modal scans for installed agents. Pick one, paste data, select a template, and click Convert.
+Open `http://localhost:3000`. The welcome modal scans for installed coding agents. Pick one, paste data, choose a template, click **⚡ Convert**.
+
+### Prerequisites
+
+- **Node.js** ≥ 20
+- **pnpm** ≥ 9
+- **At least one coding agent CLI** installed and logged in:
+  - [Claude Code](https://docs.anthropic.com/en/docs/claude-code) (recommended)
+  - [OpenAI Codex CLI](https://github.com/openai/codex)
+  - [Gemini CLI](https://github.com/google-gemini/gemini-cli)
+  - Or any of the [17 supported agents](#-supported-agents)
 
 ---
 
-## Supported Agents
+## ✨ What It Does
 
-| Agent | Protocol | Streaming | API Key Needed |
-|-------|----------|-----------|---------------|
-| Claude Code | stdin (CLI) | ✅ | No (local session) |
-| OpenAI Codex | stdin (CLI) | ✅ | No (local session) |
-| Gemini CLI | stdin (CLI) | ✅ | No (local session) |
-| Cursor Agent | stdin (CLI) | ✅ | No (local session) |
-| GitHub Copilot CLI | stdin (CLI) | ✅ | No (local session) |
-| OpenCode | stdin (CLI) | ✅ | No (local session) |
-| Qwen Coder | stdin (CLI) | ✅ | No (local session) |
-| Qoder CLI | stdin (CLI) | ✅ | No (local session) |
-| Aider | stdin (CLI) | — | No (local session) |
-| DeepSeek TUI | argv (CLI) | ✅ | No (local session) |
-| OpenClaw | argv-message | ❌ (batch) | No (local session) |
-| **DeepSeek API** | api | ✅ | `DEEPSEEK_API_KEY` |
-| **Kimi API** | api | ✅ | `KIMI_API_KEY` |
-| Mock | mock | ✅ | None |
+| 🧩 **Smart Parsing** | 🤖 **Agent-Powered** | ✅ **Verified Output** |
+|---|---|---|
+| Detects CSV, JSON, Markdown, SQL, YAML automatically | Calls your local agent CLI — no API keys needed | 10 verification checks on every generation |
+
+| 🎨 **85+ Templates** | 📤 **12 Export Targets** | 🔧 **Auto-Repair** |
+|---|---|---|
+| Articles, decks, dashboards, posters, social cards, data reports | WeChat, Zhihu, Notion, Mastodon, Bluesky, PNG, PPTX, PDF, more | Fixes broken tags, unclosed elements, attribute fragments |
+
+| 🔍 **Source-Grounding** | 📊 **Prompt Lab** | 🛡️ **Local-First Security** |
+|---|---|---|
+| Every data point annotated with traceable source keys | Dev harness for benchmarking real agent output | No server DB, host-header gate, secrets never logged |
+
+---
+
+## 🔄 How It Works
+
+```
+  📝 INPUT          🧠 PROMPT          🤖 AGENT           🔍 VERIFY         📤 EXPORT
+  ─────────         ─────────          ───────           ────────         ────────
+  CSV / JSON    →   Design rules   →   Claude Code   →   10 checks    →   WeChat
+  Markdown          Source keys        Codex CLI          Structure        PNG
+  SQL / YAML        Skill body         Gemini CLI         Security         PPTX
+  Plain text        Examples           DeepSeek API       Fidelity         Notion
+                                       ...17 agents       Sanitizer        PDF
+```
+
+1. **Parse** — Auto-detect format, convert to structured data with A1 cell IDs
+2. **Assemble** — Combine skill template + source-key rules + your data into a prompt
+3. **Generate** — Your local coding agent streams HTML via SSE
+4. **Verify** — 10 checks: HTML well-formedness, script/event/js: safety, DOMPurify diff, source-key coverage, content fidelity
+5. **Repair** — Auto-fix broken tags, close unclosed elements (conservative, never invents content)
+6. **Export** — One-click to 12 platforms, or deploy to Vercel
+
+---
+
+## 🤖 Supported Agents
+
+| Agent | Type | Streaming | Setup |
+|-------|------|-----------|-------|
+| **Claude Code** | CLI | ✅ | `npm i -g @anthropic-ai/claude-code` |
+| **OpenAI Codex** | CLI | ✅ | `npm i -g @openai/codex` |
+| **Gemini CLI** | CLI | ✅ | `npm i -g @google-gemini/gemini-cli` |
+| **Cursor Agent** | CLI | ✅ | Built into Cursor IDE |
+| **GitHub Copilot** | CLI | ✅ | `npm i -g @github/copilot-cli` |
+| **OpenCode** | CLI | ✅ | `npm i -g opencode` |
+| **Qwen Coder** | CLI | ✅ | `npm i -g @alibaba/qwen-coder` |
+| **Qoder CLI** | CLI | ✅ | `npm i -g qodercli` |
+| **Aider** | CLI | — | `pip install aider` |
+| **DeepSeek TUI** | CLI | ✅ | `npm i -g deepseek` |
+| **OpenClaw** | CLI | ❌ batch | Multi-agent gateway |
+| **DeepSeek API** | API | ✅ | Set `DEEPSEEK_API_KEY` |
+| **Kimi API** | API | ✅ | Set `KIMI_API_KEY` |
+| **Mock** | Built-in | ✅ | Always available |
 
 ACP agents (Hermes, Kimi CLI, Devin, Kiro, Kilo, Vibe) and Pi are detection-only — not yet wired.
 
 ---
 
-## Skill Templates
+## 📋 Skill Templates
 
-85+ skill templates organized by scenario. Templates are folders under `src/lib/templates/skills/<id>/` containing a `SKILL.md` with YAML frontmatter and a Chinese-language prompt body.
+85+ templates in `src/lib/templates/skills/`. Each is a folder with `SKILL.md` (YAML frontmatter + prompt body).
 
-**Adding a template = adding a folder.** No TypeScript changes needed.
+**Adding a template = adding a folder.** No code changes needed.
 
-### New Report Skills (0.4.1)
+### Report Skills (0.4.1)
 
-| Skill | Profile | Description |
-|-------|---------|-------------|
-| 📊 Data Brief | `strict` | Structured data report with tables, charts, and source annotations |
-| 📋 Survey Insight | `strict` | Employee/customer survey analysis with department breakdowns |
-| 📝 Executive Summary | `strict-numbers` | One-page executive summary with key metrics |
-| 🔬 Research Note | `medium` | Academic-style research note with methodology |
-| 🃏 Social Card | `medium` | Shareable social media card with key stats |
+| Skill | Profile | Best For |
+|-------|---------|----------|
+| 📊 **Data Brief** | `strict` | Structured tables with KPIs and charts |
+| 📋 **Survey Insight** | `strict` | Employee/customer survey analysis |
+| 📝 **Executive Summary** | `strict-numbers` | One-page metric summaries |
+| 🔬 **Research Note** | `medium` | Academic-style findings with methodology |
+| 🃏 **Social Card** | `medium` | Shareable social media stat cards |
 
----
+### Verification Profiles
 
-## Verification Profiles
-
-| Profile | Source-key requirements | Use cases |
-|---------|------------------------|-----------|
-| `strict` | Every value, label, quote must have `pf-src` annotation | Data reports, surveys |
-| `strict-numbers` | Numbers require `pf-src`, headings/descriptions exempt | Executive summaries |
-| `medium` | Key metrics require `pf-src`, interpretive text exempt | Research notes, social cards |
-| `relaxed` | Minimal annotation requirements | Creative outputs |
+| Profile | Source-Key Rules | When to Use |
+|---------|-----------------|-------------|
+| `strict` | Every value, label, quote needs `<!-- pf-src: ... -->` | Data reports, surveys |
+| `strict-numbers` | Numbers require annotation; headings exempt | Executive summaries |
+| `medium` | Key metrics annotated; interpretive text exempt | Research, social |
+| `relaxed` | Minimal annotation | Creative outputs |
 
 ---
 
-## Source-Grounding
+## 🔍 Source-Grounding
 
-Every data point in generated HTML is annotated with a source-key comment:
+Every data point gets a traceable annotation:
 
 ```html
 <td>Engineering</td><!-- pf-src: rows[].department -->
-<td>4.2</td><!-- pf-src: rows[].score -->
+<td class="text-right">4.2</td><!-- pf-src: rows[].score -->
 ```
 
-The verification engine checks that all expected source keys are present, no invalid keys exist, and sampled data values appear in the output. This provides a deterministic trust signal — you can trace every claim back to the source data.
+The verification engine checks:
+- ✅ All expected source keys are present
+- ✅ No invalid keys reference non-existent fields
+- ✅ Sampled data values appear verbatim in the output
+- ✅ No `data-pf-source-id` attributes (forbidden format)
 
 ---
 
-## Project Structure
+## 🧪 Prompt Lab
+
+A developer harness at `/dev/prompt-lab` for testing agent compliance:
+
+- Choose adapter (Mock / DeepSeek / Kimi)
+- Edit the system prompt inline
+- Run generation against the survey fixture
+- View raw HTML, source keys, verification report, and score side-by-side
+- Save runs to localStorage history
+
+---
+
+## 📁 Project Structure
 
 ```
 html-anything-main/
-├── next/                          # Next.js application
-│   ├── src/
-│   │   ├── app/
-│   │   │   ├── page.tsx           # Main page shell
-│   │   │   ├── dev/prompt-lab/    # Dev-only prompt testing UI
-│   │   │   └── api/               # 8 API routes
-│   │   ├── components/            # 20 React components
-│   │   ├── lib/
-│   │   │   ├── agents/            # Agent detection, invocation, adapters, prompt composer
-│   │   │   ├── parsers/           # Format detection, file parsing
-│   │   │   ├── templates/         # Skill loader, 85+ templates
-│   │   │   ├── sources/           # CSV parser, postprocessor
-│   │   │   ├── verify/            # Verification engine
-│   │   │   ├── html/              # HTML validator
-│   │   │   ├── repair/            # Repair engine
-│   │   │   ├── export/            # 12 export targets
-│   │   │   ├── deploy/            # Vercel deployment
-│   │   │   ├── history/           # IndexedDB version history
-│   │   │   ├── validation/        # Request validation schemas
-│   │   │   ├── security/          # Host-header validation
-│   │   │   ├── skills/            # Marketplace skill registry
-│   │   │   └── store.ts           # Zustand state (localStorage)
-│   │   └── middleware.ts          # Host-header gate on /api/*
-│   └── package.json
-├── e2e/                           # Playwright E2E tests
-├── docs/                          # Architecture documentation
+├── next/src/
+│   ├── app/
+│   │   ├── page.tsx              # Main editor shell
+│   │   ├── dev/prompt-lab/       # Dev prompt testing UI
+│   │   └── api/                  # 9 REST routes
+│   ├── components/               # 20 React components
+│   ├── lib/
+│   │   ├── agents/               # 17 agent adapters, prompt composer
+│   │   ├── parsers/              # CSV/TSV/JSON format detection
+│   │   ├── templates/            # 85+ skill templates
+│   │   ├── sources/              # A1-cell CSV parser, postprocessor
+│   │   ├── verify/               # 10-check verification engine
+│   │   ├── html/                 # DOMParser + DOMPurify validator
+│   │   ├── repair/               # Conservative auto-repair
+│   │   ├── export/               # 12 export targets
+│   │   ├── deploy/               # Vercel one-click deploy
+│   │   ├── history/              # IndexedDB version history
+│   │   ├── validation/           # Request schema validation
+│   │   └── security/             # Host-header DNS rebinding defense
+│   └── middleware.ts             # API route security gate
+├── e2e/                          # Playwright tests
+├── docs/                         # Architecture docs + screenshots
 │   ├── architecture.md
 │   ├── trust-pipeline.md
 │   ├── verification-model.md
 │   ├── agent-adapters.md
 │   ├── release-gate.md
 │   └── benchmarks/
-│       ├── real-agent-output.md
-│       └── results.json
-└── package.json                   # pnpm workspace root
+└── scripts/                      # Benchmark runners + fixtures
 ```
 
 ---
 
-## Commands
+## 🌐 API Routes
+
+| Route | Method | Description |
+|-------|--------|-------------|
+| `/api/agents` | `GET` | Detect installed agent CLIs |
+| `/api/convert` | `POST` | Generate HTML via agent (SSE stream) |
+| `/api/draft` | `POST` | AI-assisted markdown drafting |
+| `/api/templates` | `GET` | List skill templates |
+| `/api/deploy` | `POST` | Deploy HTML to Vercel preview |
+| `/api/deploy/config` | `GET PUT DELETE` | Manage deploy tokens |
+| `/api/marketplace` | `GET` | List installed skill packs |
+| `/api/marketplace/install` | `POST` | Install skill pack from GitHub |
+| `/api/agent/eval` | `POST` | Prompt evaluation (dev harness) |
+
+All POST routes use validated request schemas. Invalid input returns:
+```json
+{ "error": "Validation failed", "details": [{ "field": "agent", "message": "agent is required." }] }
+```
+
+---
+
+## 🔐 Security
+
+- **Local-first** — No server database, no authentication, no multi-tenancy
+- **Host-header gate** — Middleware rejects non-loopback `Host` headers to prevent DNS rebinding
+- **Secrets never logged** — `sanitizeErrorBody()` strips `sk-` prefixes and `Bearer` tokens from error messages
+- **Deploy tokens** — Stored at `~/.html-anything/vercel.json` with `chmod 600`
+- **HTML validation** — DOMParser structural checks + DOMPurify sanitization diff. Script tags, event handlers, and `javascript:` URLs are rejected
+
+---
+
+## ⌨️ Commands
 
 ```bash
-# Development
-pnpm -F @html-anything/next dev          # Start dev server
-
-# Testing
-pnpm -F @html-anything/next test         # Run unit tests (Vitest)
+pnpm -F @html-anything/next dev          # Development server
+pnpm -F @html-anything/next test         # Run tests (Vitest)
 pnpm -F @html-anything/next typecheck    # TypeScript check
-
-# Build
 pnpm -F @html-anything/next build        # Production build
+pnpm -F @html-anything/e2e test          # E2E tests (Playwright)
 ```
 
 ---
 
-## API Routes
+## 👥 Contributing
 
-| Route | Method | Purpose |
-|-------|--------|---------|
-| `/api/agents` | GET | Detect installed agent CLIs |
-| `/api/convert` | POST | Stream HTML generation via agent SSE |
-| `/api/draft` | POST | AI-assisted markdown drafting |
-| `/api/templates` | GET | List skill templates |
-| `/api/deploy` | POST | Deploy HTML to Vercel preview |
-| `/api/deploy/config` | GET/PUT/DELETE | Manage deploy tokens |
-| `/api/marketplace` | GET | List installed skill packages |
-| `/api/marketplace/install` | POST | Install skill pack from GitHub |
-| `/api/agent/eval` | POST | Prompt evaluation (dev harness) |
-
-All POST routes use validated request schemas. Invalid requests return `{ error: "Validation failed", details: [...] }` with status 400.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, conventions, and the contributor guide (also available in [简体中文](CONTRIBUTING.zh-CN.md)).
 
 ---
 
-## Security
+## 📄 License
 
-- **Local-first:** No server-side database, no authentication, no multi-tenancy. Runs on `localhost`.
-- **Host-header gate:** Middleware rejects non-loopback `Host` headers to prevent DNS rebinding attacks. Configurable via `HTML_ANYTHING_ALLOWED_HOSTS`.
-- **API key safety:** Secrets never appear in error messages. Adapter diagnostics report only whether a key is present, not its value.
-- **Deploy tokens:** Stored at `~/.html-anything/vercel.json` with `chmod 600`. Never leave the server.
-- **HTML validation:** DOMParser structural checks + DOMPurify sanitization diff. Script tags, event handlers, and `javascript:` URLs are rejected unless in the CDN allowlist.
+Apache 2.0 © 2025 TraceCanvas contributors. See [LICENSE](LICENSE) for full text.
 
 ---
 
-## Persistence
-
-- **localStorage:** Active tasks, content, HTML, settings (Zustand persist)
-- **IndexedDB:** Per-task version history with verification reports, repair results, and analysis summaries (capped at 20 versions/task)
-- **File system:** Deploy tokens in `~/.html-anything/`
-
----
-
-## License
-
-Apache-2.0 — see `package.json`.
-
----
-
-## Built With
-
-- [Next.js](https://nextjs.org) 16
-- [React](https://react.dev) 19
-- [Zustand](https://zustand.docs.pmnd.rs) 5
-- [PapaParse](https://www.papaparse.com) 5
-- [DOMPurify](https://github.com/cure53/DOMPurify) 3
-- [Tailwind CSS](https://tailwindcss.com) 4
-- [Vitest](https://vitest.dev) 4
-- [idb](https://github.com/jakearchibald/idb) 8
+<p align="center">
+  <sub>Built with Next.js 16 · React 19 · Zustand 5 · PapaParse 5 · DOMPurify 3 · Tailwind CSS 4 · Vitest 4</sub>
+</p>
