@@ -10,7 +10,7 @@
 <p align="center">
   <a href="https://github.com/kenny2077/TraceCanvas/actions/workflows/ci.yml"><img src="https://github.com/kenny2077/TraceCanvas/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
   <a href="https://github.com/kenny2077/TraceCanvas/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg?style=flat-square" alt="License" /></a>
-  <a href="#supported-agents"><img src="https://img.shields.io/badge/agents-17%20CLIs-black?style=flat-square" alt="Agents" /></a>
+  <a href="#supported-agents"><img src="https://img.shields.io/badge/agents-19%20CLIs-black?style=flat-square" alt="Agents" /></a>
   <a href="#skill-templates"><img src="https://img.shields.io/badge/templates-80-orange?style=flat-square" alt="Templates" /></a>
   <a href="#12-export-targets"><img src="https://img.shields.io/badge/export-12%20targets-9b59b6?style=flat-square" alt="Export" /></a>
   <a href="#quick-start"><img src="https://img.shields.io/badge/setup-3%20commands-green?style=flat-square" alt="Quickstart" /></a>
@@ -115,22 +115,29 @@ flowchart LR
 
 ### 🤖 Agent-Native
 
-TraceCanvas isn't another AI wrapper. It doesn't call an API. It spawns the coding-agent CLI already installed on your machine — Claude Code, Codex, Gemini CLI, Cursor Agent, and 13 others. If you've run `claude login`, it just works. Your subscription, your session, your rate limits. Zero additional cost.
+TraceCanvas isn't another AI wrapper. It doesn't call an API. It spawns the coding-agent CLI already installed on your machine — Claude Code, Codex, Gemini CLI, Cursor Agent, and 15 others. If you've run `claude login`, it just works. Your subscription, your session, your rate limits. Zero additional cost.
 
 ### 🎨 80 Design Templates
 
-Every template is a folder with a `SKILL.md` file — not a JSON config or a code plugin. Each one ships with a hand-authored `example.html` that the agent uses as a target to replicate. Templates span 8 modes:
+Every template is a folder with a `SKILL.md` file — not a JSON config or a code plugin. Most ship with a hand-authored `example.html` (75 of 80) that the agent uses as a target to replicate. Templates span 15 categories:
 
-| Mode | Count | Examples |
-|------|-------|----------|
-| `deck` | 20 | Swiss International, Guizang Editorial, Replit Style, XHS Pastel |
-| `prototype` | 12 | SaaS landing, dashboard, editorial web, brutalist, wireframe |
-| `frame` | 10 | Liquid background hero, NYT data chart, glitch title, cinematic light leak |
-| `social` | 8 | X post card, Spotify card, Reddit card, social carousel |
-| `office` | 15 | PM spec, runbook, finance report, invoice, OKRs, kanban, meeting notes |
-| `doc` | 2 | Kami parchment editorial, docs page |
-| `vfx` | 3 | Text cursor animation, sprite animation, motion frames |
-| `mockup` | 1 | 3D device mockup |
+| Category | Count | Examples |
+|----------|-------|----------|
+| `slides` | 22 | Swiss International, Guizang Editorial, Replit Style, XHS Pastel |
+| `video` | 8 | Liquid background hero, glitch title, cinematic light leak, text cursor VFX |
+| `prototype` | 8 | SaaS landing, dashboard, editorial web, brutalist, wireframe |
+| `dashboard` | 8 | Live dashboard, social media dashboard, team dashboard |
+| `card` | 7 | X post card, Spotify card, Reddit card, social carousel |
+| `doc` | 6 | Kami parchment editorial, docs page, weekly update, meeting notes |
+| `poster` | 5 | Magazine poster, hero poster, image poster |
+| `report` | 4 | Data report, survey insight, research note, executive summary |
+| `article` | 3 | Magazine article, blog post, digital e-guide |
+| `mobile` | 3 | Mobile app, mobile onboarding, gamified app |
+| `finance` | 2 | Finance report, printable invoice |
+| `resume` | 1 | Modern resume |
+| `email` | 1 | Email marketing |
+| `data` | 1 | Data brief |
+| `social` | 1 | Social media matrix |
 
 Adding a template = dropping a folder. No code changes, no registration step. See [CONTRIBUTING.md](CONTRIBUTING.md) for the skill authoring guide.
 
@@ -156,7 +163,7 @@ The verification engine checks that all expected source keys are present, no inv
 | **Bluesky** | Formatted post |
 | **Mastodon** | Formatted post |
 | **PNG** | `modern-screenshot` 2× DPI render |
-| **PPTX** | `pptxgenjs` slide generation |
+| **PPTX** | Deck slides via `pptxgenjs` (slide decks only) |
 | **PDF** | Browser print-to-PDF |
 | **HTML** | Self-contained `.html` download |
 | **Remotion** | Video project ZIP export |
@@ -189,7 +196,7 @@ A developer harness at `/dev/prompt-lab` for testing agent compliance across ada
   - [OpenAI Codex CLI](https://github.com/openai/codex) — `npm i -g @openai/codex`
   - [Gemini CLI](https://github.com/google-gemini/gemini-cli) — `npm i -g @google-gemini/gemini-cli && gemini auth`
   - [Cursor Agent](https://cursor.com) — built into Cursor IDE
-  - Or any of the [17 supported agents](#supported-agents)
+  - Or any of the [19 supported agents](#supported-agents)
 
 ### Install & Run
 
@@ -381,6 +388,7 @@ TraceCanvas/
 | `/api/deploy/config` | `GET PUT DELETE` | Manage deploy tokens |
 | `/api/marketplace` | `GET` | List installed skill packs |
 | `/api/marketplace/install` | `POST` | Install skill pack from GitHub |
+| `/api/marketplace/packages/[id]` | `DELETE` | Uninstall a skill pack |
 | `/api/agent/eval` | `POST` | Prompt evaluation (dev harness) |
 
 All POST routes use validated request schemas. Invalid input returns a descriptive error:
