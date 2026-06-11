@@ -23,15 +23,18 @@ export function AnalysisPanel() {
   if (!task || task.status !== "done" || !task.content) return null;
 
   const summary = summarizeForAgent(task.content);
-  const { format, structured } = summary;
-  const rowCount =
-    structured && typeof structured === "object" && "rows" in structured
-      ? (structured as { rows: unknown[] }).rows.length
-      : 0;
-  const fieldCount =
-    structured && typeof structured === "object" && "fields" in structured
-      ? (structured as { fields: string[] }).fields.length
-      : 0;
+  const { format } = summary;
+  const structured = summary.structured as Record<string, unknown> | undefined;
+  const rows =
+    structured && Array.isArray(structured.rows)
+      ? (structured.rows as unknown[])
+      : [];
+  const fields =
+    structured && Array.isArray(structured.fields)
+      ? (structured.fields as string[])
+      : [];
+  const rowCount = rows.length;
+  const fieldCount = fields.length;
 
   return (
     <div className="border-t border-gray-200 bg-gray-50 px-4 py-3 text-xs">
@@ -59,7 +62,7 @@ export function AnalysisPanel() {
         <div className="mb-2">
           <span className="text-gray-500">Fields: </span>
           <span className="text-gray-700">
-            {(structured as { fields: string[] }).fields.join(", ")}
+            {fields.join(", ")}
           </span>
         </div>
       )}
@@ -82,7 +85,7 @@ export function AnalysisPanel() {
 
       {/* Non-structured format note */}
       {!structured && format !== "text" && (
-        <p className="text-gray-400">{format.toUpperCase()} — {task.content.length.toLocaleString()} chars</p>
+        <p className="text-gray-400">{(format as string).toUpperCase()} — {task.content.length.toLocaleString()} chars</p>
       )}
     </div>
   );

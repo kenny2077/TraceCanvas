@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { NextRequest } from "next/server";
 import { POST } from "../../app/api/agent/eval/route";
 
 /**
@@ -12,8 +13,8 @@ import { POST } from "../../app/api/agent/eval/route";
  *   - Mock adapter: score 100, passed true
  */
 
-function mockReq(body: unknown): Request {
-  return new Request("http://localhost/api/agent/eval", {
+function mockReq(body: unknown): NextRequest {
+  return new NextRequest("http://localhost/api/agent/eval", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: body !== undefined ? JSON.stringify(body) : undefined,
@@ -23,7 +24,7 @@ function mockReq(body: unknown): Request {
 describe("POST /api/agent/eval", () => {
   it("returns 200 with mock adapter (score 100)", async () => {
     const req = mockReq({ adapter: "mock" });
-    const resp = await POST(req as unknown as Request);
+    const resp = await POST(req);
     expect(resp.status).toBe(200);
 
     const body = await resp.json();
@@ -38,7 +39,7 @@ describe("POST /api/agent/eval", () => {
 
   it("returns 400 for missing adapter field", async () => {
     const req = mockReq({});
-    const resp = await POST(req as unknown as Request);
+    const resp = await POST(req);
     expect(resp.status).toBe(400);
 
     const body = await resp.json();
@@ -49,7 +50,7 @@ describe("POST /api/agent/eval", () => {
 
   it("returns 400 for invalid adapter value", async () => {
     const req = mockReq({ adapter: "claude" });
-    const resp = await POST(req as unknown as Request);
+    const resp = await POST(req);
     expect(resp.status).toBe(400);
 
     const body = await resp.json();
@@ -62,12 +63,12 @@ describe("POST /api/agent/eval", () => {
   });
 
   it("returns 400 for invalid JSON body", async () => {
-    const req = new Request("http://localhost/api/agent/eval", {
+    const req = new NextRequest("http://localhost/api/agent/eval", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: "not json",
     });
-    const resp = await POST(req as unknown as Request);
+    const resp = await POST(req);
     expect(resp.status).toBe(400);
     const body = await resp.json();
     expect(body.error).toBe("Validation failed");
@@ -77,7 +78,7 @@ describe("POST /api/agent/eval", () => {
     // This test documents the contract — deepseek may fail at runtime
     // if DEEPSEEK_API_KEY is not set, but the request itself is valid.
     const req = mockReq({ adapter: "deepseek" });
-    const resp = await POST(req as unknown as Request);
+    const resp = await POST(req);
     // 200 or 500 are both acceptable — 200 if key exists, 500 if not.
     // We just verify it's not a validation error (400).
     expect(resp.status).not.toBe(400);
@@ -85,7 +86,7 @@ describe("POST /api/agent/eval", () => {
 
   it("returns 400 for unknown fields", async () => {
     const req = mockReq({ adapter: "mock", extraField: "unexpected" });
-    const resp = await POST(req as unknown as Request);
+    const resp = await POST(req);
     expect(resp.status).toBe(400);
 
     const body = await resp.json();
@@ -94,7 +95,7 @@ describe("POST /api/agent/eval", () => {
 
   it("mock adapter result includes source keys and clean HTML", async () => {
     const req = mockReq({ adapter: "mock" });
-    const resp = await POST(req as unknown as Request);
+    const resp = await POST(req);
     expect(resp.status).toBe(200);
 
     const body = await resp.json();

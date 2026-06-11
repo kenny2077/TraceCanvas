@@ -14,7 +14,7 @@ import { GET, PUT, DELETE } from "../../app/api/deploy/config/route";
 
 function mockReq(method: string, provider = "vercel", body?: unknown): NextRequest {
   const url = new URL(`http://localhost/api/deploy/config?provider=${provider}`);
-  const init: RequestInit = {
+  const init: NonNullable<ConstructorParameters<typeof NextRequest>[1]> = {
     method,
     headers: { "Content-Type": "application/json" },
   };

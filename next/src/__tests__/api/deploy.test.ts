@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { NextRequest } from "next/server";
 import { POST } from "../../app/api/deploy/route";
 
 /**
@@ -16,8 +17,8 @@ import { POST } from "../../app/api/deploy/route";
  * real token.
  */
 
-function mockReq(body: unknown): Request {
-  return new Request("http://localhost/api/deploy", {
+function mockReq(body: unknown): NextRequest {
+  return new NextRequest("http://localhost/api/deploy", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: body !== undefined ? JSON.stringify(body) : undefined,
@@ -27,7 +28,7 @@ function mockReq(body: unknown): Request {
 describe("POST /api/deploy", () => {
   it("returns 400 for missing taskId", async () => {
     const req = mockReq({ provider: "vercel", html: "<!DOCTYPE html><html></html>" });
-    const resp = await POST(req as unknown as Request);
+    const resp = await POST(req);
     expect(resp.status).toBe(400);
     const body = await resp.json();
     expect(body.error).toBe("Validation failed");
@@ -36,7 +37,7 @@ describe("POST /api/deploy", () => {
 
   it("returns 400 for missing provider", async () => {
     const req = mockReq({ taskId: "t1", html: "<!DOCTYPE html><html></html>" });
-    const resp = await POST(req as unknown as Request);
+    const resp = await POST(req);
     expect(resp.status).toBe(400);
     const body = await resp.json();
     expect(body.details.some((d: { field: string }) => d.field === "provider")).toBe(true);
@@ -44,7 +45,7 @@ describe("POST /api/deploy", () => {
 
   it("returns 400 for invalid provider", async () => {
     const req = mockReq({ taskId: "t1", provider: "netlify", html: "<!DOCTYPE html><html></html>" });
-    const resp = await POST(req as unknown as Request);
+    const resp = await POST(req);
     expect(resp.status).toBe(400);
     const body = await resp.json();
     const providerErr = body.details.find(
@@ -56,7 +57,7 @@ describe("POST /api/deploy", () => {
 
   it("returns 400 for empty HTML", async () => {
     const req = mockReq({ taskId: "t1", provider: "vercel", html: "" });
-    const resp = await POST(req as unknown as Request);
+    const resp = await POST(req);
     expect(resp.status).toBe(400);
     const body = await resp.json();
     expect(body.details.some((d: { field: string }) => d.field === "html")).toBe(true);
@@ -64,7 +65,7 @@ describe("POST /api/deploy", () => {
 
   it("returns 400 for missing HTML field", async () => {
     const req = mockReq({ taskId: "t1", provider: "vercel" });
-    const resp = await POST(req as unknown as Request);
+    const resp = await POST(req);
     expect(resp.status).toBe(400);
     const body = await resp.json();
     expect(body.details.some((d: { field: string }) => d.field === "html")).toBe(true);
@@ -76,19 +77,19 @@ describe("POST /api/deploy", () => {
       provider: "cloudflare-pages",
       html: "<!DOCTYPE html><html></html>",
     });
-    const resp = await POST(req as unknown as Request);
+    const resp = await POST(req);
     expect(resp.status).toBe(501);
     const body = await resp.json();
     expect(body.error).toContain("not implemented");
   });
 
   it("returns 400 for invalid JSON", async () => {
-    const req = new Request("http://localhost/api/deploy", {
+    const req = new NextRequest("http://localhost/api/deploy", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: "not json",
     });
-    const resp = await POST(req as unknown as Request);
+    const resp = await POST(req);
     expect(resp.status).toBe(400);
     const body = await resp.json();
     expect(body.error).toBe("Validation failed");
@@ -101,7 +102,7 @@ describe("POST /api/deploy", () => {
       html: "<!DOCTYPE html><html></html>",
       extraField: "should-not-be-here",
     });
-    const resp = await POST(req as unknown as Request);
+    const resp = await POST(req);
     expect(resp.status).toBe(400);
     const body = await resp.json();
     expect(body.details.some((d: { field: string }) => d.field === "extraField")).toBe(
@@ -117,7 +118,7 @@ describe("POST /api/deploy", () => {
       provider: "vercel",
       html: "<!DOCTYPE html><html><head></head><body><p>test</p></body></html>",
     });
-    const resp = await POST(req as unknown as Request);
+    const resp = await POST(req);
     // Either 400 (missing token) or 500 (file read error) — both are
     // clean failures, not crashes.
     expect(resp.status).toBeGreaterThanOrEqual(400);
