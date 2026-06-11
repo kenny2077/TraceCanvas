@@ -136,6 +136,7 @@ export function WelcomeModal({ onClose }: Props) {
 
   return (
     <div
+      data-testid="welcome-modal"
       className="fixed inset-0 z-50 flex items-center justify-center od-backdrop"
       style={{ background: "rgba(21, 20, 15, 0.45)", backdropFilter: "blur(6px)" }}
       onClick={(e) => {

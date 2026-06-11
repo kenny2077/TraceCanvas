@@ -290,6 +290,7 @@ export function PreviewPane({
             {effectiveHtml && (
               <>
                 <iframe
+                  data-testid="preview-iframe"
                   key={refreshKey}
                   ref={localRef}
                   title="preview"

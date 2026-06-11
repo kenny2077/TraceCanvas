@@ -37,11 +37,12 @@ export function VerificationReceipt({
   const { checks, score, passed, summary } = report;
 
   return (
-    <div className="border-b border-gray-200 bg-white px-4 py-3 text-xs">
+    <div data-testid="verification-receipt" className="border-b border-gray-200 bg-white px-4 py-3 text-xs">
       {/* Header */}
       <div className="flex items-center gap-3 mb-3">
         {/* Score badge */}
         <div
+          data-testid="score-badge"
           className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold
             ${score >= 90 ? "bg-green-100 text-green-700" : score >= 60 ? "bg-amber-100 text-amber-700" : "bg-red-100 text-red-700"}`}
           title={`Score: ${score}/100`}

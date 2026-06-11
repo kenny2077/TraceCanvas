@@ -123,8 +123,9 @@ export function validateHtml(
   if (sanitize && typeof DOMPurify !== "undefined") {
     try {
       sanitized = DOMPurify.sanitize(html, {
-        ALLOWED_TAGS: ["*"], // allow all — we only want to count removals
-        ALLOWED_ATTR: ["*"],
+        WHOLE_DOCUMENT: true,
+        ADD_TAGS: ["script", "style", "meta", "title", "link", "iframe", "object", "embed"],
+        ADD_ATTR: ["charset", "src", "href", "rel", "name", "content"],
         ALLOW_DATA_ATTR: true,
       });
       // Count removed elements by comparing the source vs sanitized

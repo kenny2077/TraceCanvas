@@ -50,19 +50,19 @@ function dataBriefFixture(): MockFixture {
   <div class="grid grid-cols-4 gap-4 mb-8">
     <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
       <p class="text-xs text-gray-400 uppercase tracking-wide">平均评分</p>
-      <p class="text-2xl font-bold text-blue-600">4.30</p><!-- pf-src: avg_score -->
+      <p class="text-2xl font-bold text-blue-600">4.30</p><!-- pf-derived -->
     </div>
     <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
       <p class="text-xs text-gray-400 uppercase tracking-wide">总人员</p>
-      <p class="text-2xl font-bold text-gray-900">70</p><!-- pf-src: total_headcount -->
+      <p class="text-2xl font-bold text-gray-900">70</p><!-- pf-derived -->
     </div>
     <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
       <p class="text-xs text-gray-400 uppercase tracking-wide">最高评分</p>
-      <p class="text-2xl font-bold text-green-600">4.7</p><!-- pf-src: max_score -->
+      <p class="text-2xl font-bold text-green-600">4.7</p><!-- pf-derived -->
     </div>
     <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
       <p class="text-xs text-gray-400 uppercase tracking-wide">最低评分</p>
-      <p class="text-2xl font-bold text-red-500">3.8</p><!-- pf-src: min_score -->
+      <p class="text-2xl font-bold text-red-500">3.8</p><!-- pf-derived -->
     </div>
   </div>
 

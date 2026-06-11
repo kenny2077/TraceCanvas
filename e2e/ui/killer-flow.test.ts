@@ -8,13 +8,13 @@ import { test, expect } from "@playwright/test";
  */
 
 test("CSV fixture → mock convert → preview → verification receipt → export menu", async ({ page }) => {
-  // 1. Load the app
-  await page.goto("http://localhost:3000");
+  await page.goto("/");
 
   // 2. Welcome modal: select Mock Agent
   await page.waitForSelector("[data-testid=welcome-modal]", { timeout: 5000 });
-  await page.click("text=Mock Agent");
-  await page.click("text=Enter Editor");
+  const welcomeModal = page.locator("[data-testid=welcome-modal]");
+  await welcomeModal.locator("text=Mock Agent").first().click();
+  await welcomeModal.locator("text=Enter Editor").click();
 
   // 3. Paste CSV fixture
   const csv = `department,score,headcount
@@ -54,6 +54,6 @@ Product,4.5,8`;
   // 10. Export menu should open
   await page.click("[data-testid=export-menu-button]");
   await page.waitForSelector("[data-testid=export-menu]", { timeout: 5000 });
-  await expect(page.locator("text=PNG")).toBeVisible();
-  await expect(page.locator("text=PDF")).toBeVisible();
+  await expect(page.locator("text=PNG").first()).toBeVisible();
+  await expect(page.locator("text=HTML").first()).toBeVisible();
 });

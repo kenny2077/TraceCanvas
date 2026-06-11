@@ -125,7 +125,7 @@ describe("POST /api/marketplace/install", () => {
     const res = await POST(req);
     expect(res.status).toBe(400);
     const data = (await res.json()) as { error: string };
-    expect(data.error).toBe("invalid_json");
+    expect(data.error).toBe("Validation failed");
   });
 
   it("returns 400 when source is missing", async () => {

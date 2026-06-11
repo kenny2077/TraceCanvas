@@ -137,11 +137,11 @@ export function parseCSV(
         });
       }
 
-      // Escaped quote: raw value contains ""
-      if (rawValue.includes('""') && !suppressWarnings.includes("escaped-quote")) {
+      // Escaped quote: parsed value contains double quote
+      if (rawValue.includes('"') && !suppressWarnings.includes("escaped-quote")) {
         warnings.push({
           type: "escaped-quote",
-          message: `Cell ${cellId} contains escaped quotes ("")`,
+          message: `Cell ${cellId} contains escaped quotes`,
           row: rowIndex,
           col: ci,
         });

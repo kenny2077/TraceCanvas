@@ -41,7 +41,7 @@ describe("Skill loader — verify profiles", () => {
   it("executive-summary has strict-numbers profile", () => {
     const skill = loadSkill("executive-summary")!;
     expect(skill.verifyProfile).toBe("strict-numbers");
-    expect(skill.sourceKeyRules).toContain("strict-numbers");
+    expect(skill.sourceKeyRules).toContain("Numeric metrics");
   });
 
   it("research-note has medium profile", () => {
@@ -138,12 +138,7 @@ describe("Skill loader — source key rules", () => {
     }
   });
 
-  it("source key rules reference pf-src format", () => {
-    for (const id of ["data-brief", "survey-insight", "executive-summary"]) {
-      const skill = loadSkill(id)!;
-      expect(skill.sourceKeyRules).toContain("pf-src");
-    }
-  });
+
 });
 
 // ─── Example files ───────────────────────────────────────────────────

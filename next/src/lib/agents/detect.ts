@@ -448,6 +448,9 @@ export function detectAgents(): DetectedAgent[] {
       unsupported: unsupported || undefined,
     };
     const override = a.envOverride ? process.env[a.envOverride] : undefined;
+    if (a.id === "mock") {
+      return { ...base, available: true, resolvedBin: a.bin };
+    }
     if (override && existsSync(override)) {
       return { ...base, available: true, path: override, resolvedBin: a.bin };
     }

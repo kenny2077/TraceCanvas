@@ -159,7 +159,7 @@ export function ExportMenu({ iframeRef }: ExportMenuProps) {
 
   return (
     <div className="relative" ref={ref}>
-      <button onClick={() => setOpen((o) => !o)} disabled={disabled} className="btn-ink">
+      <button data-testid="export-menu-button" onClick={() => setOpen((o) => !o)} disabled={disabled} className="btn-ink">
         {t("export.button")}
       </button>
       {open && (

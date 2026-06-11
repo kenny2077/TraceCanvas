@@ -237,6 +237,7 @@ export function TemplatePicker() {
   return (
     <div className="relative" ref={ref}>
       <button
+        data-testid="template-picker-button"
         onClick={() => setOpen((o) => !o)}
         className="flex items-center gap-2 rounded-full border px-3 py-1.5 text-[13px] transition-all hover:border-[var(--ink)]/30"
         style={{ background: "var(--surface)", borderColor: "var(--line)" }}

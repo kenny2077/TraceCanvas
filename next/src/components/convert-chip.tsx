@@ -73,6 +73,7 @@ export function ConvertChip() {
       style={{ transform: "translateX(-50%)" }}
     >
       <button
+        data-testid="convert-button"
         onClick={onClick}
         disabled={!isRunning && !canConvert}
         title={tip}

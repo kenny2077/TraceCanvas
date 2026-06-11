@@ -116,6 +116,7 @@ export function EditorPane() {
                 </div>
               )}
               <textarea
+                data-testid="editor-textarea"
                 value={hydrated ? content : ""}
                 onChange={(e) => {
                   if (!hydrated) return;
