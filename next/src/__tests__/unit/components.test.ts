@@ -120,7 +120,12 @@ describe("AnalysisPanel", () => {
   });
 
   it("handles non-structured formats", () => {
-    const summary = {
+    const summary: {
+      format: "markdown";
+      raw: string;
+      preview: string;
+      structured?: unknown;
+    } = {
       format: "markdown" as const,
       raw: "# Hello",
       preview: "[Markdown document, 7 chars]",
@@ -150,7 +155,7 @@ describe("RepairPanel", () => {
   it("repairResult has correct shape for unchanged HTML", () => {
     const repairResult = {
       html: "<!DOCTYPE html><html></html>",
-      actions: [] as const[],
+      actions: [] as string[],
       changed: false,
       log: [] as string[],
     };
@@ -216,7 +221,7 @@ describe("Component integration shapes", () => {
 
     const mockValidation = {
       valid: true,
-      issues: [],
+      issues: [] as Array<{ severity: "error" | "warn" }>,
       document: null,
       sanitized: "",
       sanitizerRemoved: 0,
@@ -232,7 +237,7 @@ describe("Component integration shapes", () => {
         detail: mockValidation.valid
           ? "HTML structure is valid."
           : `${mockValidation.issues.length} structural issue(s).`,
-        metric: mockValidation.issues.filter((i) => i.severity === "error").length,
+        metric: (mockValidation.issues as Array<{ severity: string }>).filter((i) => i.severity === "error").length,
       },
       {
         id: "html-sanitizer",

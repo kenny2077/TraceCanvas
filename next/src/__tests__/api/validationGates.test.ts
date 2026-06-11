@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { NextRequest } from "next/server";
 import { POST as convertPost } from "../../app/api/convert/route";
 import { POST as draftPost } from "../../app/api/draft/route";
 import { POST as deployPost } from "../../app/api/deploy/route";
@@ -17,18 +18,18 @@ import { POST as agentEvalPost } from "../../app/api/agent/eval/route";
  * clients that parse validation errors will break.
  */
 
-type RouteHandler = (req: Request) => Promise<Response>;
+type RouteHandler = (req: NextRequest) => Promise<Response>;
 
-function jsonReq(body: unknown): Request {
-  return new Request("http://localhost/api/test", {
+function jsonReq(body: unknown): NextRequest {
+  return new NextRequest("http://localhost/api/test", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: body !== undefined ? JSON.stringify(body) : undefined,
   });
 }
 
-function nonJsonReq(): Request {
-  return new Request("http://localhost/api/test", {
+function nonJsonReq(): NextRequest {
+  return new NextRequest("http://localhost/api/test", {
     method: "POST",
     headers: { "Content-Type": "text/plain" },
     body: "not json",
@@ -107,32 +108,32 @@ describe("Validation gates — missing required fields", () => {
   it("POST /api/convert requires agent, templateId, content", async () => {
     // Missing all three
     const req = jsonReq({});
-    const resp = await convertPost(req as unknown as Request);
+    const resp = await convertPost(req);
     await assertValidationError(resp, "agent");
   });
 
   it("POST /api/draft requires agent, instruction", async () => {
     const req = jsonReq({});
-    const resp = await draftPost(req as unknown as Request);
+    const resp = await draftPost(req);
     await assertValidationError(resp, "agent");
   });
 
   it("POST /api/deploy requires taskId, provider, html", async () => {
     const req = jsonReq({});
-    const resp = await deployPost(req as unknown as Request);
+    const resp = await deployPost(req);
     await assertValidationError(resp, "taskId");
   });
 
   it("POST /api/agent/eval requires adapter", async () => {
     const req = jsonReq({});
-    const resp = await agentEvalPost(req as unknown as Request);
+    const resp = await agentEvalPost(req);
     await assertValidationError(resp, "adapter");
   });
 
   it("PUT /api/deploy/config accepts empty body (all optional)", async () => {
     // Deploy config has no required fields — empty body is valid.
     const req = jsonReq({});
-    const resp = await deployConfigPut(req as unknown as Request);
+    const resp = await deployConfigPut(req);
     // Should NOT be a validation error
     expect(resp.status).toBeGreaterThanOrEqual(200);
     expect(resp.status).toBeLessThan(500);
@@ -152,19 +153,19 @@ describe("Validation gates — unknown fields", () => {
 describe("Validation gates — wrong types", () => {
   it("POST /api/convert rejects number for agent", async () => {
     const req = jsonReq({ agent: 123, templateId: "t1", content: "hello" });
-    const resp = await convertPost(req as unknown as Request);
+    const resp = await convertPost(req);
     await assertValidationError(resp, "agent");
   });
 
   it("POST /api/agent/eval rejects number for adapter", async () => {
     const req = jsonReq({ adapter: 123 });
-    const resp = await agentEvalPost(req as unknown as Request);
+    const resp = await agentEvalPost(req);
     await assertValidationError(resp, "adapter");
   });
 
   it("POST /api/deploy rejects number for html", async () => {
     const req = jsonReq({ taskId: "t1", provider: "vercel", html: 123 });
-    const resp = await deployPost(req as unknown as Request);
+    const resp = await deployPost(req);
     await assertValidationError(resp, "html");
   });
 });
@@ -176,7 +177,7 @@ describe("Validation gates — string length exceeded", () => {
       templateId: "t1",
       content: "hello",
     });
-    const resp = await convertPost(req as unknown as Request);
+    const resp = await convertPost(req);
     await assertValidationError(resp, "agent");
   });
 
@@ -185,7 +186,7 @@ describe("Validation gates — string length exceeded", () => {
       agent: "claude",
       instruction: "x".repeat(11_000),
     });
-    const resp = await draftPost(req as unknown as Request);
+    const resp = await draftPost(req);
     await assertValidationError(resp, "instruction");
   });
 });

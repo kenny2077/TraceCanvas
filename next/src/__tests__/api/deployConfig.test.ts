@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { NextRequest } from "next/server";
 import { GET, PUT, DELETE } from "../../app/api/deploy/config/route";
 
 /**
@@ -11,7 +12,7 @@ import { GET, PUT, DELETE } from "../../app/api/deploy/config/route";
  *   - Invalid provider: 400
  */
 
-function mockReq(method: string, provider = "vercel", body?: unknown): Request {
+function mockReq(method: string, provider = "vercel", body?: unknown): NextRequest {
   const url = new URL(`http://localhost/api/deploy/config?provider=${provider}`);
   const init: RequestInit = {
     method,
@@ -20,13 +21,13 @@ function mockReq(method: string, provider = "vercel", body?: unknown): Request {
   if (body !== undefined) {
     init.body = JSON.stringify(body);
   }
-  return new Request(url.toString(), init);
+  return new NextRequest(url.toString(), init);
 }
 
 describe("GET /api/deploy/config", () => {
   it("returns 200 with public config shape", async () => {
     const req = mockReq("GET");
-    const resp = await GET(req as unknown as Request);
+    const resp = await GET(req);
     expect(resp.status).toBe(200);
 
     const body = await resp.json();
@@ -39,7 +40,7 @@ describe("GET /api/deploy/config", () => {
 
   it("returns 400 for invalid provider", async () => {
     const req = mockReq("GET", "heroku");
-    const resp = await GET(req as unknown as Request);
+    const resp = await GET(req);
     expect(resp.status).toBe(400);
     const body = await resp.json();
     expect(body.error).toBeDefined();
@@ -49,12 +50,12 @@ describe("GET /api/deploy/config", () => {
 describe("PUT /api/deploy/config", () => {
   it("returns 400 for invalid JSON body", async () => {
     const url = new URL("http://localhost/api/deploy/config?provider=vercel");
-    const req = new Request(url.toString(), {
+    const req = new NextRequest(url.toString(), {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: "not json",
     });
-    const resp = await PUT(req as unknown as Request);
+    const resp = await PUT(req);
     expect(resp.status).toBe(400);
     const body = await resp.json();
     expect(body.error).toBe("Validation failed");
@@ -62,7 +63,7 @@ describe("PUT /api/deploy/config", () => {
 
   it("returns 400 for unknown fields in body", async () => {
     const req = mockReq("PUT", "vercel", { token: "test", badField: 123 });
-    const resp = await PUT(req as unknown as Request);
+    const resp = await PUT(req);
     expect(resp.status).toBe(400);
     const body = await resp.json();
     expect(body.details.some((d: { field: string }) => d.field === "badField")).toBe(true);
@@ -70,7 +71,7 @@ describe("PUT /api/deploy/config", () => {
 
   it("returns 400 for wrong types", async () => {
     const req = mockReq("PUT", "vercel", { token: 123 });
-    const resp = await PUT(req as unknown as Request);
+    const resp = await PUT(req);
     expect(resp.status).toBe(400);
     const body = await resp.json();
     expect(body.details.some((d: { field: string }) => d.field === "token")).toBe(true);
@@ -78,7 +79,7 @@ describe("PUT /api/deploy/config", () => {
 
   it("valid body shape is accepted (may fail on missing token)", async () => {
     const req = mockReq("PUT", "vercel", { token: "vercel_test123" });
-    const resp = await PUT(req as unknown as Request);
+    const resp = await PUT(req);
     // The request is valid — the handler may fail because token is fake,
     // but it should NOT be a validation error.
     // writeDeployConfig requires a non-empty token, so 400 is acceptable.
@@ -90,7 +91,7 @@ describe("PUT /api/deploy/config", () => {
 describe("DELETE /api/deploy/config", () => {
   it("returns 200 with unconfigured state", async () => {
     const req = mockReq("DELETE");
-    const resp = await DELETE(req as unknown as Request);
+    const resp = await DELETE(req);
     expect(resp.status).toBe(200);
 
     const body = await resp.json();
@@ -100,7 +101,7 @@ describe("DELETE /api/deploy/config", () => {
 
   it("returns 400 for invalid provider", async () => {
     const req = mockReq("DELETE", "heroku");
-    const resp = await DELETE(req as unknown as Request);
+    const resp = await DELETE(req);
     expect(resp.status).toBe(400);
   });
 });

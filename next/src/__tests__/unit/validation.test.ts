@@ -85,7 +85,7 @@ describe("validateJsonRequest — required fields", () => {
   });
 
   it("accepts valid required fields", async () => {
-    const result = await validate<{ agent: string }>(
+    const result = await validate<{ agent: string; templateId: string; content: string }>(
       { agent: "claude", templateId: "article-magazine", content: "hello world" },
       ConvertRequestSchema,
     );

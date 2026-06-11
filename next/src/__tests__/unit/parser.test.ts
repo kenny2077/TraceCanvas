@@ -284,7 +284,7 @@ describe("parseCSV — determinism", () => {
     const a = parseCSV(csv);
     const b = parseCSV(csv);
     expect(a.document.id).toBe(b.document.id);
-    expect(a.document.rows[0].cells[0].cellId).toBe(b.document.rows[0].cellId);
+    expect(a.document.rows[0].cells[0].cellId).toBe(b.document.rows[0].cells[0].cellId);
   });
 
   it("different input produces different document ids", () => {
