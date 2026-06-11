@@ -19,7 +19,7 @@ cd TraceCanvas/tracecanvas
 pnpm install --frozen-lockfile
 
 # Start dev server
-pnpm -F @html-anything/next dev
+pnpm -F @tracecanvas/next dev
 ```
 
 Open http://localhost:3000
@@ -91,6 +91,6 @@ A new user can go from `git clone` to verified HTML report in **< 5 minutes** wi
 | Issue | Fix |
 |-------|-----|
 | "pnpm not found" | `npm install -g pnpm` |
-| Port 3000 in use | `PORT=3001 pnpm -F @html-anything/next dev` |
+| Port 3000 in use | `PORT=3001 pnpm -F @tracecanvas/next dev` |
 | Mock agent not in list | Check `next/src/lib/agents/detect.ts` has mock entry |
 | Verification receipt empty | Ensure CSV has header row + data rows |

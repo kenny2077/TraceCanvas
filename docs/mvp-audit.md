@@ -113,7 +113,7 @@ The killer differentiators are **missing**:
 
 | Issue | Location | Severity |
 |-------|----------|----------|
-| **Quick Start path wrong** | `cd TraceCanvas/html-anything-main` | **HIGH** — actual repo has `html-anything-main/` as root, but the README at repo root says this. Wait: the repo root IS `TraceCanvas/`, so `cd TraceCanvas/html-anything-main` is correct from outside. But the context says "live repo tree shows `next/`, not `html-anything-main`" — this is misleading. The app is under `html-anything-main/next/`, not `html-anything-main/src/`. |
+| **Quick Start path wrong** | `cd TraceCanvas/tracecanvas` | **HIGH** — actual repo has `tracecanvas/` as root, but the README at repo root says this. Wait: the repo root IS `TraceCanvas/`, so `cd TraceCanvas/tracecanvas` is correct from outside. But the context says "live repo tree shows `next/`, not `tracecanvas`" — this is misleading. The app is under `tracecanvas/next/`, not `tracecanvas/src/`. |
 | **80 templates claim** | "80 templates in next/src/lib/templates/skills/" | **MEDIUM** — 81 directories exist, but most lack `example.html`. Only ~6 have complete examples. |
 | **75 of 80 with example.html** | README line 122 | **HIGH** — False. Most skills have only `SKILL.md` + `example.md`. |
 | **19 agents claim** | Badge says "19 CLIs" | **MEDIUM** — 17 in `AGENTS` array + Mock (not implemented) + 2 API-based (not implemented) = 17 real, not 19. |
@@ -239,7 +239,7 @@ The killer differentiators are **missing**:
 ```
 1. Clone repo
 2. pnpm install --frozen-lockfile
-3. pnpm -F @html-anything/next dev
+3. pnpm -F @tracecanvas/next dev
 4. Open http://localhost:3000
 5. Select "Mock Agent" (no CLI needed)
 6. Paste CSV fixture:
