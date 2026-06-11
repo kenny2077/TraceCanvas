@@ -8,6 +8,7 @@ import { saveVersion } from "@/lib/history/repository";
 import { validateHtml } from "@/lib/html/validator";
 import { repairHtml } from "@/lib/repair/engine";
 import { summarizeForAgent } from "@/lib/parsers/auto";
+import type { VerificationReport } from "@/lib/verify/engine";
 
 export type ModelOption = { id: string; label: string };
 
@@ -75,6 +76,8 @@ export type Task = {
   status: ConvertStatus;
   log: LogEntry[];
   stats: RunStats;
+  /** Full verification report from verifyArtifact() */
+  verificationReport?: VerificationReport;
   // sample-derived fields — when populated, the next convert switches to
   // diff-edit mode and asks the agent to make minimal changes to baseHtml
   // instead of regenerating from scratch.
@@ -250,6 +253,8 @@ type State = {
   clearLogFor: (taskId: string) => void;
   resetStatsFor: (taskId: string) => void;
   patchStatsFor: (taskId: string, patch: Partial<RunStats>) => void;
+  /** Store the full verification report for a task */
+  setVerificationReportFor: (taskId: string, report: VerificationReport) => void;
   /** snapshot the current (content, html) as the new diff-edit baseline */
   commitBaseFor: (taskId: string) => void;
   /** record a successful one-click deployment of the task's html. */
@@ -421,6 +426,10 @@ export const useStore = create<State>()(
       patchStatsFor: (taskId, patch) =>
         set((st) => ({
           tasks: patchTask(st.tasks, taskId, (t) => ({ stats: { ...t.stats, ...patch } })),
+        })),
+      setVerificationReportFor: (taskId, report) =>
+        set((st) => ({
+          tasks: patchTask(st.tasks, taskId, { verificationReport: report }),
         })),
       commitBaseFor: (taskId) => {
         // Snapshot the freshly converted (content, html) as the next diff-edit

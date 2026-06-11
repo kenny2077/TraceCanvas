@@ -2,6 +2,7 @@ import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
 import { existsSync } from "node:fs";
 import { resolveOnPath, resolveOpenclawAgentId, AGENTS } from "./detect";
 import { buildArgv, envFor, makeParser, UnsupportedAgentProtocolError } from "./argv";
+import { mockAgentStream } from "./mock";
 
 export type InvokeOpts = {
   agent: string;
@@ -9,6 +10,8 @@ export type InvokeOpts = {
   cwd?: string;
   model?: string;
   signal?: AbortSignal;
+  /** Template id — used by mock agent to select the right fixture. */
+  templateId?: string;
   /**
    * Absolute path to the agent binary. Wins over `process.env[envOverride]`
    * and the PATH scan when set. Surfaced from the Settings UI for users
@@ -79,6 +82,30 @@ export type InvokeEvent =
   | { type: "error"; message: string };
 
 export function invokeAgent(opts: InvokeOpts): ReadableStream<InvokeEvent> {
+  // Mock agent: return deterministic fixture stream, no CLI spawn.
+  if (opts.agent === "mock") {
+    return new ReadableStream<InvokeEvent>({
+      async start(controller) {
+        const safeEnqueue = (ev: InvokeEvent) => {
+          try { controller.enqueue(ev); } catch { /* closed */ }
+        };
+        const safeClose = () => {
+          try { controller.close(); } catch { /* closed */ }
+        };
+        const onAbort = () => { safeClose(); };
+        opts.signal?.addEventListener("abort", onAbort, { once: true });
+        try {
+          for await (const ev of mockAgentStream(opts.templateId)) {
+            safeEnqueue(ev);
+          }
+        } finally {
+          opts.signal?.removeEventListener("abort", onAbort);
+          safeClose();
+        }
+      },
+    });
+  }
+
   const def = AGENTS.find((a) => a.id === opts.agent);
   if (!def) {
     return errorStream(`unknown agent: ${opts.agent}`);

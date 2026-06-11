@@ -41,6 +41,17 @@ export type AgentDef = {
 };
 
 export const AGENTS: AgentDef[] = [
+  // Mock agent — always available, returns deterministic fixtures.
+  // No PATH check, no CLI needed. Enables demos without paid agent setup.
+  {
+    id: "mock",
+    label: "Mock Agent",
+    bin: "mock-agent",
+    vendor: "TraceCanvas",
+    protocol: "stdin",
+    fallbackModels: [DEFAULT_MODEL],
+  },
+
   // Drop-in fork list (`fallbackBins`) covers CLIs that ship under a different
   // binary name but speak the exact same argv protocol. Today: openclaude is
   // listed as a fallback for Claude Code; OpenClaw is exposed as its own

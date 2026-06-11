@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Executive Summary</title>
+<style>
+  :root { --primary:#0f172a; --accent:#2563eb; --bg:#fff; --muted:#64748b; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans SC", sans-serif; background:var(--bg); color:var(--primary); padding:32px; }
+  .page { max-width:720px; margin:0 auto; border:1px solid #e2e8f0; border-radius:16px; padding:32px; }
+  h1 { font-size:22px; margin-bottom:4px; }
+  .meta { color:var(--muted); font-size:13px; margin-bottom:20px; }
+  .kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:24px; }
+  .kpi { text-align:center; }
+  .kpi-value { font-size:26px; font-weight:700; color:var(--accent); }
+  .kpi-label { font-size:11px; color:var(--muted); text-transform:uppercase; margin-top:4px; }
+  h2 { font-size:14px; text-transform:uppercase; letter-spacing:.5px; margin:20px 0 8px; color:var(--muted); }
+  p, li { font-size:14px; line-height:1.6; }
+  ul { padding-left:18px; }
+  li { margin-bottom:6px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>Q1 2025 Performance Summary</h1>
+  <p class="meta">Prepared for leadership · 4 departments · 70 employees</p>
+
+  <div class="kpis">
+    <div class="kpi">
+      <div class="kpi-value">4.30</div><!-- pf-derived -->
+      <div class="kpi-label">Avg Score</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-value">70</div><!-- pf-src: rows[].headcount -->
+      <div class="kpi-label">Headcount</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-value">4.7</div><!-- pf-src: rows[].score -->
+      <div class="kpi-label">Top Score</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-value">4</div><!-- pf-derived -->
+      <div class="kpi-label">Departments</div>
+    </div>
+  </div>
+
+  <h2>Trends</h2>
+  <p>Design leads in satisfaction with a score of 4.7, while Marketing shows the most room for improvement at 3.8. Overall engagement remains strong across all four departments.</p><!-- pf-derived -->
+
+  <h2>Actions</h2>
+  <ul>
+    <li>Investigate Marketing score drivers to close the 0.9-point gap with Design.</li><!-- pf-derived -->
+    <li>Replicate Design's recognition practices in Engineering.</li><!-- pf-derived -->
+  </ul>
+</div>
+</body>
+</html>

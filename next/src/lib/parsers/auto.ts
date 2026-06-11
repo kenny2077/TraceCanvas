@@ -76,6 +76,10 @@ export type ParsedSummary = {
   preview: string;
   /** Optional structured data extracted */
   structured?: unknown;
+  /** Source keys that the agent should annotate in output (structured data only) */
+  allowedKeys?: string[];
+  /** Sample values for content fidelity verification */
+  fidelitySamples?: Array<{ key: string; value: string }>;
 };
 
 const MAX_RAW_FOR_AGENT = 40_000;
@@ -85,6 +89,8 @@ export function summarizeForAgent(input: string): ParsedSummary {
   const raw = input;
   let preview = "";
   let structured: unknown;
+  let allowedKeys: string[] | undefined;
+  let fidelitySamples: Array<{ key: string; value: string }> | undefined;
 
   switch (format) {
     case "csv":
@@ -108,6 +114,24 @@ export function summarizeForAgent(input: string): ParsedSummary {
           return obj;
         });
         structured = { fields: doc.fields, rows, _sourceDocId: doc.id };
+
+        // Generate allowedKeys for source-key verification
+        allowedKeys = doc.fields.map((f) => `rows[].${f}`);
+
+        // Generate fidelity samples (up to 10 cell values)
+        const samples: Array<{ key: string; value: string }> = [];
+        for (const row of doc.rows.slice(0, 5)) {
+          for (const cell of row.cells.slice(0, 2)) {
+            if (cell.value != null && cell.value !== "") {
+              samples.push({
+                key: `${cell.field}_${row.rowIndex}`,
+                value: String(cell.value),
+              });
+            }
+          }
+        }
+        fidelitySamples = samples.slice(0, 10);
+
         const sampleRows = rows.slice(0, 20);
         const warnNote =
           doc.warnings.length > 0
@@ -133,6 +157,34 @@ export function summarizeForAgent(input: string): ParsedSummary {
           pretty.length > 4000
             ? `[JSON] 截断预览 (完整 ${pretty.length} 字节):\n${pretty.slice(0, 4000)}\n…`
             : `[JSON]\n${pretty}`;
+
+        // Generate allowedKeys from JSON shape (flatten first level)
+        if (Array.isArray(parsed) && parsed.length > 0 && typeof parsed[0] === "object") {
+          const firstRow = parsed[0] as Record<string, unknown>;
+          allowedKeys = Object.keys(firstRow).map((k) => `rows[].${k}`);
+          // Sample values
+          const samples: Array<{ key: string; value: string }> = [];
+          for (let i = 0; i < Math.min(parsed.length, 5); i++) {
+            const row = parsed[i] as Record<string, unknown>;
+            for (const key of Object.keys(row).slice(0, 2)) {
+              const val = row[key];
+              if (val != null && val !== "") {
+                samples.push({ key: `${key}_${i}`, value: String(val) });
+              }
+            }
+          }
+          fidelitySamples = samples.slice(0, 10);
+        } else if (typeof parsed === "object" && parsed !== null) {
+          allowedKeys = Object.keys(parsed).map((k) => k);
+          const samples: Array<{ key: string; value: string }> = [];
+          for (const key of Object.keys(parsed).slice(0, 10)) {
+            const val = (parsed as Record<string, unknown>)[key];
+            if (val != null && typeof val !== "object") {
+              samples.push({ key, value: String(val) });
+            }
+          }
+          fidelitySamples = samples;
+        }
       } catch (err) {
         preview = `[JSON 但解析失败]\n${input.slice(0, 1000)}`;
       }
@@ -162,5 +214,5 @@ export function summarizeForAgent(input: string): ParsedSummary {
       `\n\n[...内容过长, 已截断 (${raw.length - MAX_RAW_FOR_AGENT} 字符省略)]`;
   }
 
-  return { format, raw: agentRaw, preview, structured };
+  return { format, raw: agentRaw, preview, structured, allowedKeys, fidelitySamples };
 }

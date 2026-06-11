@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Research Note</title>
+<style>
+  :root { --primary:#0f172a; --accent:#2563eb; --bg:#f8fafc; --card:#fff; --muted:#64748b; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family: Georgia, "Noto Serif SC", serif; background:var(--bg); color:var(--primary); padding:32px; }
+  .container { max-width:760px; margin:0 auto; background:var(--card); border-radius:12px; padding:32px; box-shadow:0 1px 2px rgba(0,0,0,.05); }
+  h1 { font-size:26px; margin-bottom:8px; }
+  .meta { color:var(--muted); font-size:13px; margin-bottom:24px; }
+  h2 { font-size:16px; margin:24px 0 8px; color:var(--accent); }
+  p { font-size:15px; line-height:1.7; margin-bottom:12px; }
+  table { width:100%; border-collapse:collapse; margin:12px 0; }
+  th, td { padding:10px 12px; text-align:left; font-size:14px; border-bottom:1px solid #e2e8f0; }
+  th { font-weight:600; color:var(--muted); }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Cross-Department Performance Analysis</h1>
+  <p class="meta">Research Note · Q1 2025 · n=4 departments</p>
+
+  <h2>Abstract</h2>
+  <p>This note examines department-level performance scores and headcounts to identify patterns in engagement and resourcing.</p>
+
+  <h2>Data</h2>
+  <table>
+    <thead>
+      <tr><th>Department</th><th>Score</th><th>Headcount</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Engineering</td><!-- pf-src: rows[].department -->
+        <td>4.2</td><!-- pf-src: rows[].score -->
+        <td>32</td><!-- pf-src: rows[].headcount -->
+      </tr>
+      <tr>
+        <td>Design</td><!-- pf-src: rows[].department -->
+        <td>4.7</td><!-- pf-src: rows[].score -->
+        <td>12</td><!-- pf-src: rows[].headcount -->
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Findings</h2>
+  <p>Engineering is the largest department with 32 employees and maintains a solid performance score of 4.2.</p><!-- pf-derived -->
+  <p>Design, while smaller at 12 employees, achieves the highest score of 4.7, suggesting high efficiency per capita.</p><!-- pf-derived -->
+
+  <h2>Limitations</h2>
+  <p>Data covers a single quarter; longitudinal analysis is needed before making structural decisions.</p>
+</div>
+</body>
+</html>

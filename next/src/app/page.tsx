@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Toolbar } from "@/components/toolbar";
 import { EditorPane } from "@/components/editor-pane";
 import { PreviewPane } from "@/components/preview-pane";
@@ -13,8 +13,7 @@ import { AnalysisPanel } from "@/components/analysis-panel";
 import { RepairPanel } from "@/components/repair-panel";
 import { VerificationReceipt } from "@/components/verification-receipt";
 import { useStore, type AgentInfo } from "@/lib/store";
-import { validateHtml } from "@/lib/html/validator";
-import type { VerificationReport, CheckResult } from "@/lib/verify/engine";
+import type { VerificationReport } from "@/lib/verify/engine";
 
 export default function Home() {
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
@@ -27,6 +26,10 @@ export default function Home() {
     const task = s.tasks.find((t) => t.id === s.activeTaskId);
     return task?.html ?? "";
   });
+  const activeTaskVerification = useStore((s) => {
+    const task = s.tasks.find((t) => t.id === s.activeTaskId);
+    return task?.verificationReport ?? null;
+  });
   const [welcomeOpen, setWelcomeOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [settingsInitialSection, setSettingsInitialSection] = useState<
@@ -34,7 +37,6 @@ export default function Home() {
   >(undefined);
   const [deployConfigRev, setDeployConfigRev] = useState(0);
   const [hydrated, setHydrated] = useState(false);
-  const [showVerification, setShowVerification] = useState(false);
 
   useEffect(() => {
     setHydrated(true);
@@ -77,52 +79,7 @@ export default function Home() {
   }, [hydrated, welcomeAck, selectedAgent]);
 
   // Compute lightweight HTML validation whenever the active task's HTML changes.
-  const verificationReport: VerificationReport | null = useMemo(() => {
-    if (!activeTaskHtml) return null;
-    const result = validateHtml(activeTaskHtml);
-    const checks: CheckResult[] = [
-      {
-        id: "html-structural",
-        label: "HTML structure",
-        status: result.valid ? "pass" : "fail",
-        detail: result.valid
-          ? "HTML structure is valid."
-          : `${result.issues.filter((i) => i.severity === "error").length} structural issue(s).`,
-        metric: result.issues.filter((i) => i.severity === "error").length,
-      },
-      {
-        id: "html-security",
-        label: "HTML security",
-        status: result.issues.some((i) => i.kind === "script-tag" || i.kind === "event-handler" || i.kind === "javascript-url")
-          ? "fail"
-          : "pass",
-        detail: result.issues.some((i) => i.kind === "script-tag")
-          ? "Script tag detected."
-          : "No security issues.",
-      },
-      {
-        id: "html-sanitizer",
-        label: "Sanitizer",
-        status: result.sanitizerRemoved > 0 ? "fail" : "pass",
-        detail:
-          result.sanitizerRemoved > 0
-            ? `DOMPurify removed ${result.sanitizerRemoved} element(s).`
-            : "DOMPurify found no issues.",
-        metric: result.sanitizerRemoved,
-      },
-    ];
-    const failCount = checks.filter((c) => c.status === "fail").length;
-    const warnCount = checks.filter((c) => c.status === "warn").length;
-    const passCount = checks.filter((c) => c.status === "pass").length;
-    const total = checks.length;
-    const score = Math.round(((passCount + warnCount * 0.5) / total) * 100);
-    return {
-      passed: failCount === 0,
-      checks,
-      score,
-      summary: failCount === 0 ? "HTML looks good." : `${failCount} issue(s) found.`,
-    };
-  }, [activeTaskHtml]);
+  const verificationReport: VerificationReport | null = activeTaskVerification;
 
   return (
     <main className="relative flex h-screen flex-col">
@@ -162,21 +119,11 @@ export default function Home() {
               <RepairPanel />
               {activeTaskHtml && verificationReport && (
                 <div className="border-t border-gray-200">
-                  <button
-                    onClick={() => setShowVerification(!showVerification)}
-                    className="w-full px-4 py-2 text-xs text-gray-400 hover:text-gray-600 text-left transition-colors"
-                  >
-                    {showVerification ? "▾ Hide" : "▸ Show"} verification (
-                    {verificationReport.score}/100)
-                  </button>
-                  {showVerification && (
-                    <VerificationReceipt
-                      report={verificationReport}
-                      htmlBytes={activeTaskHtml.length}
-                      safeToExport={verificationReport.passed}
-                      onDismiss={() => setShowVerification(false)}
-                    />
-                  )}
+                  <VerificationReceipt
+                    report={verificationReport}
+                    htmlBytes={activeTaskHtml.length}
+                    safeToExport={verificationReport.passed}
+                  />
                 </div>
               )}
             </section>

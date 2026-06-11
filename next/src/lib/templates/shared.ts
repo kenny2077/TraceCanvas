@@ -34,25 +34,46 @@ export const SHARED_DESIGN_DIRECTIVES = `
 - **必须使用用户提供的真实数据**, 不要编造、不要 lorem ipsum、不要 "Your text here"。
 - 如果用户数据是结构化数据 (CSV/JSON), 请提取关键洞察并以图表/表格呈现。
 - 中文与英文混排时, 中英文之间留半角空格 (盘古之白)。
+`;
 
+/**
+ * Generic source-key annotation rules injected for all structured data inputs.
+ * These instruct the agent to emit <!-- pf-src: ... --> comments.
+ */
+export const SOURCE_KEY_DIRECTIVES = `
+【Source-Key Annotation Rules — 必须遵守】
+- 用户输入的是结构化数据 (CSV/TSV/JSON/Excel) 时, 每一个在 HTML 中呈现的数据值 MUST 紧跟一个 HTML 注释标注其来源。
+- 注释格式: \`<!-- pf-src: rows[].字段名 -->\` (CSV/TSV) 或 \`<!-- pf-src: path.to.value -->\` (JSON)。
+- 示例: \`<td>4.2</td><!-- pf-src: rows[].score -->\`
+- 禁止在 HTML 元素上使用 \`data-pf-source-id\` 属性 — 只用注释。
+- 禁止编造数据。所有呈现的数字、标签、分类必须与输入完全一致。
+- 如果模板要求 KPI 卡片、表格、图表, 其中的每一个数据点都要有 pf-src 注释。
 `;
 
 /**
  * Wrap a per-template instruction body with the shared design directives and
  * the user content tail. This is the canonical prompt shape; both inline
- * `buildPrompt` functions in `index.ts` and the skill-folder loader assemble
+ * \`buildPrompt\` functions in \`index.ts\` and the skill-folder loader assemble
  * prompts via this helper so behaviour stays identical.
  */
 export function assemblePrompt(opts: {
   body: string;
   content: string;
   format: string;
+  /** Additional source-key rules from skill frontmatter (optional). */
+  sourceKeyRules?: string;
+  /** Whether the input is structured data that needs source-key annotations. */
+  structuredData?: boolean;
 }): string {
-  return `${SHARED_DESIGN_DIRECTIVES}
-${opts.body.trim()}
-
-【输入格式】: ${opts.format}
-【用户内容】:
-${opts.content}
-`;
+  const parts: string[] = [SHARED_DESIGN_DIRECTIVES.trim()];
+  if (opts.structuredData) {
+    parts.push(SOURCE_KEY_DIRECTIVES.trim());
+  }
+  if (opts.sourceKeyRules) {
+    parts.push(`【模板附加规则】\n${opts.sourceKeyRules.trim()}`);
+  }
+  parts.push(opts.body.trim());
+  parts.push(`【输入格式】: ${opts.format}`);
+  parts.push(`【用户内容】:\n${opts.content}`);
+  return parts.join("\n\n");
 }

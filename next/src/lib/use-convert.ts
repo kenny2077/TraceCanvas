@@ -3,6 +3,9 @@
 import { useCallback } from "react";
 import { useStore } from "./store";
 import { summarizeForAgent } from "./parsers/auto";
+import { postprocessSourceKeys } from "./sources/postprocessor";
+import { verifyArtifact } from "./verify/engine";
+import type { VerificationReport } from "./verify/engine";
 
 type ConvertReq = {
   taskId: string;
@@ -58,6 +61,10 @@ export function useConvert() {
         summary.preview && summary.format !== "markdown" && summary.format !== "html" && summary.format !== "text"
           ? `${summary.preview}\n\n--- 原始内容 ---\n${summary.raw}`
           : summary.raw;
+
+      // Store allowedKeys and fidelitySamples for post-conversion verification
+      const allowedKeys = summary.allowedKeys;
+      const fidelitySamples = summary.fidelitySamples;
 
       const useModel = req.model && req.model !== "default" ? req.model : undefined;
       const binOverride = store.agentBinOverrides[req.agent]?.trim() || undefined;
@@ -145,6 +152,23 @@ export function useConvert() {
         const endedAt = Date.now();
         useStore.getState().patchStatsFor(taskId, { endedAt, durationMs: endedAt - startedAt });
         useStore.getState().setStatusFor(taskId, "done");
+
+        // Run full source-key verification after stream completes
+        const finalHtml = useStore.getState().tasks.find((t) => t.id === taskId)?.html ?? "";
+        if (finalHtml && allowedKeys && allowedKeys.length > 0) {
+          const postprocess = postprocessSourceKeys(finalHtml, allowedKeys);
+          const sourceData = summary.structured as { fields: string[]; rows: Record<string, unknown>[] } | undefined;
+          const report: VerificationReport = verifyArtifact({
+            rawOutput: finalHtml,
+            cleanHtml: finalHtml,
+            postprocess,
+            sourceData: sourceData ?? { fields: [], rows: [] },
+            allowedKeys,
+            fidelitySamples: fidelitySamples ?? [],
+          });
+          useStore.getState().setVerificationReportFor(taskId, report);
+        }
+
         // record the just-finished (content, html) as the new diff-edit baseline
         // so the user's next edit goes through diff mode instead of full regen
         useStore.getState().commitBaseFor(taskId);

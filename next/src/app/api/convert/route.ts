@@ -83,7 +83,14 @@ export async function POST(req: NextRequest) {
       format,
     });
   } else {
-    prompt = assemblePrompt({ body: skill.body, content, format });
+    const structuredData = ["csv", "tsv", "json", "xlsx"].includes(format);
+    prompt = assemblePrompt({
+      body: skill.body,
+      content,
+      format,
+      sourceKeyRules: skill.sourceKeyRules,
+      structuredData,
+    });
   }
   const abortCtl = new AbortController();
   req.signal?.addEventListener("abort", () => abortCtl.abort(), { once: true });
@@ -94,6 +101,7 @@ export async function POST(req: NextRequest) {
     model,
     cwd,
     binOverride,
+    templateId,
     signal: abortCtl.signal,
   });
 
