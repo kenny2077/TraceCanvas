@@ -13,7 +13,7 @@
 ```bash
 # Clone
 git clone https://github.com/kenny2077/TraceCanvas.git
-cd TraceCanvas/html-anything-main
+cd TraceCanvas/tracecanvas
 
 # Install dependencies
 pnpm install --frozen-lockfile

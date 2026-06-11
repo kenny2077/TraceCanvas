@@ -1,6 +1,6 @@
-# Contributing to HTML Anything
+# Contributing to TraceCanvas
 
-Thanks for thinking about contributing. HTML Anything is small on purpose — most of the value lives in **files** (skill folders, prompt fragments, agent adapters) rather than framework code. The highest-leverage contributions are usually one folder, one Markdown file, or a ten-line adapter.
+Thanks for thinking about contributing. TraceCanvas is small on purpose — most of the value lives in **files** (skill folders, prompt fragments, agent adapters) rather than framework code. The highest-leverage contributions are usually one folder, one Markdown file, or a ten-line adapter.
 
 This guide tells you exactly where to look for each type of contribution and what bar a PR has to clear before we merge.
 
@@ -12,24 +12,24 @@ This guide tells you exactly where to look for each type of contribution and wha
 
 | If you want to… | You're really adding | Where it lives | Ship size |
 |---|---|---|---|
-| Make HTML Anything render a new kind of artifact (an invoice, a job posting, an iOS Settings screen…) | a **Skill** | [`src/lib/templates/skills/<your-skill>/`](src/lib/templates/skills/) | one folder, ~3 files |
+| Make TraceCanvas render a new kind of artifact (an invoice, a job posting, an iOS Settings screen…) | a **Skill** | [`src/lib/templates/skills/<your-skill>/`](src/lib/templates/skills/) | one folder, ~3 files |
 | Hook up a new coding-agent CLI | an **Agent adapter** | [`src/lib/agents/argv.ts`](src/lib/agents/argv.ts) + [`src/lib/agents/detect.ts`](src/lib/agents/detect.ts) | ~10 lines in one array |
 | Add a new export target (WeChat Channels, Douyin captions, Notion, …) | an **Export adapter** | [`src/components/drafts-menu.tsx`](src/components/drafts-menu.tsx) + helper under `src/lib/export/` | one component + one helper |
 | Add a feature, fix a bug, refactor the streaming parser | code | `src/app/`, `src/lib/`, `src/components/` | normal PR |
 | Improve docs, port a section into another language, fix typos | docs | `README.md`, `README.zh-CN.md`, this file | one PR |
 
-If you're not sure which bucket your idea is in, [open an issue first](https://github.com/nexu-io/html-anything/issues/new) and we'll point you at the right surface.
+If you're not sure which bucket your idea is in, [open an issue first](https://github.com/kenny2077/TraceCanvas/issues/new) and we'll point you at the right surface.
 
 ---
 
 ## Local setup
 
 ```bash
-git clone https://github.com/nexu-io/html-anything.git
-cd html-anything
+git clone https://github.com/kenny2077/TraceCanvas.git
+cd TraceCanvas/tracecanvas
 pnpm install
-pnpm dev                  # next dev — http://localhost:3000
-pnpm build                # next build, when verifying a release-shaped bundle
+pnpm -F @tracecanvas/next dev                  # next dev — http://localhost:3000
+pnpm -F @tracecanvas/next build                # next build, when verifying a release-shaped bundle
 ```
 
 Node `~20` and `pnpm` are required. macOS, Linux, and WSL2 are the primary paths. Native Windows should work but isn't a primary target — file an issue if it doesn't.
@@ -42,7 +42,7 @@ Before you push, make sure you have **at least one coding-agent CLI logged in** 
 
 ## Adding a new Skill
 
-A skill is a folder under [`src/lib/templates/skills/`](src/lib/templates/skills/) with a `SKILL.md` at the root, following Claude Code's [`SKILL.md` convention][skill] plus a small extended frontmatter that the picker reads. **No registration step.** Drop the folder in, restart `pnpm dev`, the picker shows it.
+A skill is a folder under [`src/lib/templates/skills/`](src/lib/templates/skills/) with a `SKILL.md` at the root, following Claude Code's [`SKILL.md` convention][skill] plus a small extended frontmatter that the picker reads. **No registration step.** Drop the folder in, restart `pnpm -F @tracecanvas/next dev`, the picker shows it.
 
 ### Skill folder layout
 
@@ -100,7 +100,7 @@ example_prompt: |
 ### Bar for merging a new skill
 
 1. **Real `example.html` ships in the folder.** Hand-author it once — the agent has a target to copy. PRs without one get bounced.
-2. **The example renders in the browser** (`pnpm dev` → pick the skill → ⌘+Enter → screenshot). Attach the screenshot to the PR.
+2. **The example renders in the browser** (`pnpm -F @tracecanvas/next dev` → pick the skill → ⌘+Enter → screenshot). Attach the screenshot to the PR.
 3. **Hard constraints exist and are specific.** Vague directives ("use modern typography") are not constraints. Real ones look like "Inter 96 / 64 / 40 / 24 / 16 px, 8 px grid, max two weights per slide".
 4. **No `lorem ipsum`** anywhere in the example. If the example uses placeholder data, it must be plausibly-real placeholder data.
 5. **Slug uses ASCII lowercase with dashes** — `deck-swiss-international`, `social-x-post-card`. Mirror the 75 existing folders.
@@ -137,7 +137,7 @@ That's it. `/api/agents` will detect it on `PATH`, the top-bar picker shows it, 
 
 ### Bar for merging an agent adapter
 
-1. **A real session works end-to-end.** Run `pnpm dev`, pick your agent, generate any skill's `example_prompt`, and paste the SSE log into the PR description showing it streamed an artifact through.
+1. **A real session works end-to-end.** Run `pnpm -F @tracecanvas/next dev`, pick your agent, generate any skill's `example_prompt`, and paste the SSE log into the PR description showing it streamed an artifact through.
 2. **`PATH` detection works on macOS, Linux, and WSL.** The scanner already includes `~/.local/bin` · `~/.bun/bin` · `/opt/homebrew/bin` · `~/.npm-global/bin`; if your CLI lives somewhere else, add the dir to the scan list.
 3. **The README's "Supported coding agents" table gets one row** in both `README.md` and `README.zh-CN.md`.
 4. **Stream parser is reusable.** If the CLI emits the same JSON-line shape as another adapter, share the parser — don't fork.
@@ -168,7 +168,7 @@ Beyond that:
 - **Don't narrate.** No `// import the module`, no `// loop through items`. If the code reads obviously, the comment is noise. Save comments for non-obvious intent or constraints the code can't express.
 - **TypeScript for `src/`.** No new top-level `.js` files unless there's a compelling reason.
 - **No new top-level dependencies** without a paragraph in the PR description on what we get vs. what bytes we ship. The dep list in [`package.json`](package.json) is small on purpose.
-- **Run `pnpm build`** before pushing structural changes. Type errors block merge.
+- **Run `pnpm -F @tracecanvas/next build`** before pushing structural changes. Type errors block merge.
 
 ---
 
@@ -181,7 +181,7 @@ Beyond that:
 - **No squash-during-review.** Push fixups; we'll squash on merge.
 - **No force-push to a shared branch** unless the reviewer asked.
 
-We don't enforce a CLA. Apache-2.0 covers us; your contribution is licensed under the same.
+We don't enforce a CLA. MIT covers us; your contribution is licensed under the same.
 
 ---
 
@@ -189,7 +189,7 @@ We don't enforce a CLA. Apache-2.0 covers us; your contribution is licensed unde
 
 Open an issue with:
 
-- What you ran (the exact `pnpm dev` invocation, or which UI button you clicked).
+- What you ran (the exact `pnpm -F @tracecanvas/next dev` invocation, or which UI button you clicked).
 - Which agent CLI was selected (Claude Code? Cursor Agent? …).
 - The skill that triggered it.
 - The relevant **server log tail** — most "the artifact never rendered" reports get diagnosed in 30 seconds when we can see `spawn ENOENT` or the CLI's actual error.
@@ -201,7 +201,7 @@ For prompt-stack bugs ("the agent emitted a purple gradient hero, the constraint
 
 ## Asking questions
 
-- Architecture question, design question, "is this a bug or a misuse" → [GitHub Discussions](https://github.com/nexu-io/html-anything/discussions) (preferred — searchable for the next person).
+- Architecture question, design question, "is this a bug or a misuse" → [GitHub Discussions](https://github.com/kenny2077/TraceCanvas/discussions) (preferred — searchable for the next person).
 - "How do I write a skill that does X" → open a discussion. We'll answer it and turn the answer into an entry in this guide if the pattern is missing.
 
 ---
@@ -210,10 +210,10 @@ For prompt-stack bugs ("the agent emitted a purple gradient hero, the constraint
 
 To keep the project focused, please don't open PRs that:
 
-- **Vendor a model runtime.** HTML Anything's whole bet is "your existing CLI is enough". We don't ship `pi-ai`, OpenAI keys, model loaders, or hosted inference proxies.
+- **Vendor a model runtime.** TraceCanvas's whole bet is "your existing CLI is enough". We don't ship `pi-ai`, OpenAI keys, model loaders, or hosted inference proxies.
 - **Rewrite the frontend away from the current stack without prior discussion.** Next.js 16 App Router + React 19 + Tailwind v4 + TypeScript is the line. No Astro, Solid, Svelte, or other framework rewrites unless maintainers explicitly want that migration.
 - **Replace the SSE streaming model with WebSocket / long-polling.** SSE + iframe `srcdoc` append is the simplest thing that ships a live render; we keep it.
-- **Add telemetry / analytics / phone-home.** HTML Anything is local-first. The only outbound calls are to the agent CLI on your laptop, plus whatever the generated HTML itself references (Tailwind CDN, Google Fonts).
+- **Add telemetry / analytics / phone-home.** TraceCanvas is local-first. The only outbound calls are to the agent CLI on your laptop, plus whatever the generated HTML itself references (Tailwind CDN, Google Fonts).
 - **Bundle a binary** without a license file and authorship attribution next to it.
 - **Add a skill whose `example.html` is empty / placeholder / clearly model-generated without review.** A skill is judged by what its example renders; an empty example is rejected immediately.
 
@@ -234,7 +234,7 @@ The repo ships two languages at parity: English (`README.md`, `CONTRIBUTING.md`)
 
 ## License
 
-By contributing, you agree your contribution is licensed under the [Apache-2.0 License](LICENSE) of this repository.
+By contributing, you agree your contribution is licensed under the [MIT License](LICENSE) of this repository.
 
 Vendored work retains its original license and authorship attribution — see each `src/lib/templates/skills/<skill>/` folder's own `LICENSE` / `README.md` for what it inherits from upstream. The most prominent example is [`src/lib/templates/skills/deck-guizang-editorial/`](src/lib/templates/skills/deck-guizang-editorial/), which retains the original license and authorship attribution to [op7418](https://github.com/op7418).
 

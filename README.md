@@ -1,18 +1,11 @@
 <div align="center">
-  <a href="https://github.com/kenny2077/TraceCanvas">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="docs/assets/banner.png" />
-      <img src="docs/assets/banner.png" alt="TraceCanvas" width="800" />
-    </picture>
-  </a>
-
   <h1>TraceCanvas</h1>
   <p><b>Auditable HTML reports from structured data.</b></p>
   <p>Paste a CSV. Pick a template. Your local agent generates a verified HTML report —<br/>every number traceable, every claim checkable.</p>
 
   <p>
     <a href="https://github.com/kenny2077/TraceCanvas/actions/workflows/ci.yml"><img src="https://github.com/kenny2077/TraceCanvas/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
-    <a href="https://github.com/kenny2077/TraceCanvas/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg?style=flat-square" alt="License" /></a>
+    <a href="https://github.com/kenny2077/TraceCanvas/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="License" /></a>
     <a href="#quick-start"><img src="https://img.shields.io/badge/version-1.0.0-2563eb?style=flat-square" alt="Version" /></a>
     <img src="https://img.shields.io/badge/node-%E2%89%A520-339933?style=flat-square&logo=node.js&logoColor=white" alt="Node.js" />
     <img src="https://img.shields.io/badge/next.js-16-black?style=flat-square&logo=next.js&logoColor=white" alt="Next.js" />
@@ -20,10 +13,10 @@
   </p>
 
   <p>
-    <a href="#quick-start"><b>🚀 Quick Start</b></a> ·
-    <a href="docs/trust-pipeline.md"><b>📖 How Verification Works</b></a> ·
-    <a href="docs/demo-script.md"><b>🎬 Demo Script</b></a> ·
-    <a href="https://github.com/kenny2077/TraceCanvas/stargazers"><b>⭐ Star on GitHub</b></a>
+    <a href="#quick-start"><b>Quick Start</b></a> ·
+    <a href="docs/trust-pipeline.md"><b>How Verification Works</b></a> ·
+    <a href="docs/demo-script.md"><b>Demo Script</b></a> ·
+    <a href="https://github.com/kenny2077/TraceCanvas/stargazers"><b>Star on GitHub</b></a>
   </p>
 </div>
 
@@ -35,14 +28,12 @@ AI-generated reports look great — until someone asks **"where did this number 
 
 **TraceCanvas is different.** It treats trust as a first-class feature:
 
-- Every data point in the output is annotated with a source key: `<!-- pf-src: rows[].score -->`
+- Every data point in the output is annotated with a source key: `<!-- tc-src: rows[].score -->`
 - A **verification receipt** runs 10 automated checks after generation
 - The report is scored 0–100 on structure, security, source-key coverage, and content fidelity
 - Everything runs locally through your own coding-agent CLI — or the built-in Mock Agent for instant demos
 
 > **The core idea:** TraceCanvas doesn't just make reports that look good. It makes reports where **every number can be checked against the input.**
-
-<!-- TODO: add a 15–20s demo GIF (docs/assets/demo.gif) showing CSV paste → Data Brief → verification receipt → PNG export -->
 
 ---
 
@@ -51,15 +42,14 @@ AI-generated reports look great — until someone asks **"where did this number 
 Get a verified HTML report running locally in 60 seconds. No coding-agent CLI required.
 
 ```bash
-# 1. Clone
 git clone https://github.com/kenny2077/TraceCanvas.git
-cd TraceCanvas/html-anything-main
+cd TraceCanvas/tracecanvas
 
 # 2. Install
 pnpm install --frozen-lockfile
 
 # 3. Run
-pnpm -F @html-anything/next dev
+pnpm -F @tracecanvas/next dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000), then:
@@ -104,18 +94,18 @@ If you have Claude Code, Codex, or another supported agent installed, select it 
 
 ## Features
 
-### 🔍 Source-Grounding
+### Source-Grounding
 
 Every data-backed value is annotated with a traceable source key:
 
 ```html
-<td>Engineering</td><!-- pf-src: rows[].department -->
-<td class="text-right">4.2</td><!-- pf-src: rows[].score -->
+<td>Engineering</td><!-- tc-src: rows[].department -->
+<td class="text-right">4.2</td><!-- tc-src: rows[].score -->
 ```
 
 The verification engine checks that expected keys are present, invalid keys are flagged, sampled values match the input verbatim, and no forbidden attributes exist.
 
-### ✅ Verification Receipt
+### Verification Receipt
 
 After generation, a score badge and full report are displayed front-and-center:
 
@@ -128,17 +118,17 @@ After generation, a score badge and full report are displayed front-and-center:
 | Source-key coverage | % of expected keys found |
 | Source-key validity | All keys reference real input fields |
 | Content fidelity | Sampled input values appear verbatim |
-| Forbidden attributes | No raw `data-pf-source-id` attributes |
+| Forbidden attributes | No raw `data-tc-source-id` attributes |
 | Markdown fences | No accidental ``` fences in HTML |
 | Anti-patterns | No lorem ipsum, no purple gradients |
 
-### 🤖 Agent-Native + Mock Agent
+### Agent-Native + Mock Agent
 
 TraceCanvas spawns the coding-agent CLI already on your machine — Claude Code, Codex, Gemini CLI, Cursor Agent, and others.
 
 **Don't have one installed?** The built-in **Mock Agent** returns deterministic HTML fixtures. No CLI, no API key, no setup.
 
-### 🎨 Design Templates
+### Design Templates
 
 80 skill templates spanning reports, dashboards, decks, docs, cards, and more. The 1.0 heroes are the data/report templates:
 
@@ -153,7 +143,7 @@ TraceCanvas spawns the coding-agent CLI already on your machine — Claude Code,
 
 Adding a template = dropping a folder. No registration step.
 
-### 📤 Export Targets
+### Export Targets
 
 | Target | Status | Method |
 |--------|--------|--------|
@@ -165,7 +155,7 @@ Adding a template = dropping a folder. No registration step.
 | **Zhihu** | Ready | Math formula conversion |
 | Notion / Bluesky / Mastodon / Bilibili / Remotion / Markdown | Planned | Stubs exist; full export coming post-1.0 |
 
-### 🛡️ Local-First Security
+### Local-First Security
 
 - No server database, no authentication, no cloud dependency
 - Host-header gate prevents DNS rebinding
@@ -196,8 +186,6 @@ Adding a template = dropping a folder. No registration step.
   <img src="docs/screenshots/03-streaming.png" alt="Streaming generation" width="380" />
   <img src="docs/screenshots/04-export.png" alt="Export menu" width="380" />
 </div>
-
-<!-- TODO: replace with a unified demo GIF once recorded -->
 
 ---
 
@@ -235,20 +223,20 @@ Hermes, Kimi CLI, Devin, Kiro, Kilo, Vibe, and Pi are detected in the picker but
 
 ```bash
 # Development
-pnpm -F @html-anything/next dev          # Start dev server (localhost:3000)
+pnpm -F @tracecanvas/next dev          # Start dev server (localhost:3000)
 
 # Quality
-pnpm -F @html-anything/next typecheck    # TypeScript check
-pnpm -F @html-anything/next test         # Unit tests (Vitest)
-pnpm -F @html-anything/e2e typecheck     # E2E TypeScript check
-pnpm -F @html-anything/e2e test          # E2E tests (Playwright)
+pnpm -F @tracecanvas/next typecheck    # TypeScript check
+pnpm -F @tracecanvas/next test         # Unit tests (Vitest)
+pnpm -F @tracecanvas/e2e typecheck     # E2E TypeScript check
+pnpm -F @tracecanvas/e2e test          # E2E tests (Playwright)
 
 # Production
-pnpm -F @html-anything/next build        # Production build
-pnpm -F @html-anything/next start        # Start production server
+pnpm -F @tracecanvas/next build        # Production build
+pnpm -F @tracecanvas/next start        # Start production server
 
 # Guard (run before pushing)
-pnpm exec tsx scripts/guard.ts           # Validate project shape
+pnpm exec tsx scripts/guard.ts         # Validate project shape
 ```
 
 ---
@@ -257,7 +245,7 @@ pnpm exec tsx scripts/guard.ts           # Validate project shape
 
 ```
 TraceCanvas/
-├── html-anything-main/          # ← Application
+├── tracecanvas/                 # Application
 │   ├── next/                    # Next.js app
 │   │   ├── src/
 │   │   │   ├── app/             # Routes + API
@@ -346,7 +334,7 @@ Also available in [简体中文](CONTRIBUTING.zh-CN.md).
 
 ## License
 
-Apache 2.0 © 2025 TraceCanvas contributors. See [LICENSE](LICENSE) for full text.
+MIT © 2025 TraceCanvas contributors. See [LICENSE](LICENSE) for full text.
 
 Vendored works in `next/src/lib/templates/skills/` retain their original licenses.
 

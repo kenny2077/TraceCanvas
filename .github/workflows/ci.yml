@@ -33,19 +33,19 @@ jobs:
         run: pnpm exec tsx scripts/guard.ts
 
       - name: Typecheck app
-        run: pnpm -F @html-anything/next typecheck
+        run: pnpm -F @tracecanvas/next typecheck
 
       - name: Typecheck e2e
-        run: pnpm -F @html-anything/e2e typecheck
+        run: pnpm -F @tracecanvas/e2e typecheck
 
       - name: App unit tests
-        run: pnpm -F @html-anything/next test
+        run: pnpm -F @tracecanvas/next test
 
       - name: Build
-        run: pnpm -F @html-anything/next build
+        run: pnpm -F @tracecanvas/next build
 
       - name: Install Playwright browser
-        run: pnpm -F @html-anything/e2e exec playwright install --with-deps chromium
+        run: pnpm -F @tracecanvas/e2e exec playwright install --with-deps chromium
 
       - name: E2E smoke
-        run: pnpm -F @html-anything/e2e test
+        run: pnpm -F @tracecanvas/e2e test

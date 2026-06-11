@@ -1,6 +1,6 @@
 import { defineConfig, devices } from "@playwright/test";
 
-const webPort = Number(process.env.HTML_ANYTHING_E2E_PORT) || 3317;
+const webPort = Number(process.env.TRACECANVAS_E2E_PORT) || 3317;
 const baseURL = `http://127.0.0.1:${webPort}`;
 
 export default defineConfig({
@@ -29,7 +29,7 @@ export default defineConfig({
     screenshot: "only-on-failure",
   },
   webServer: {
-    command: `pnpm -F @html-anything/next build && pnpm -F @html-anything/next exec next start -p ${webPort}`,
+    command: `pnpm -F @tracecanvas/next build && pnpm -F @tracecanvas/next exec next start -p ${webPort}`,
     url: baseURL,
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,

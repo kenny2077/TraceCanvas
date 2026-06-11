@@ -249,7 +249,7 @@ After Phase 2 implementation, pause and audit:
 - `next/src/components/verification-receipt.tsx` — Enhanced UI
 - `next/src/lib/use-convert.ts` — Handle verification events
 - `next/src/lib/store.ts` — Add verificationReport to Task type
-- `html-anything-main/README.md` — Fix drift, rewrite story
+- `tracecanvas/README.md` — Fix drift, rewrite story
 
 ---
 

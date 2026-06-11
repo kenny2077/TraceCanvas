@@ -2,7 +2,7 @@
 
 > **Date:** 2026-06-11
 > **Auditor:** Neko-chan AI Agent
-> **Scope:** html-anything-main/ (Next.js app + E2E)
+> **Scope:** tracecanvas/ (Next.js app + E2E)
 > **Product Direction:** CSV/XLSX/JSON → source-grounded HTML report → verification receipt → PNG/PDF/PPTX export
 
 ---
@@ -151,7 +151,7 @@ The killer differentiators are **missing**:
 | 6 | **XLSX not parsed for source keys** | Excel upload → no source grounding | `summarizeForAgent()` only handles CSV/TSV |
 | 7 | **JSON not parsed for source keys** | JSON input → no source grounding | `summarizeForAgent()` parses JSON but doesn't generate `allowedKeys` |
 | 8 | **E2E only has 3 specs, none cover conversion flow** | No automated proof the killer path works | `e2e/ui/` has deploy-control, export-menu, host-validation only |
-| 9 | **README quick-start path confusion** | Makes project look stale | README says `cd TraceCanvas/html-anything-main` which is correct, but structure diagram is confusing |
+| 9 | **README quick-start path confusion** | Makes project look stale | README says `cd TraceCanvas/tracecanvas` which is correct, but structure diagram is confusing |
 | 10 | **Most skills lack example.html** | Template picker looks empty/broken for most skills | Only ~6 of 81 skills have `example.html` |
 
 ---

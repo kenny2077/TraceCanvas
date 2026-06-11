@@ -174,7 +174,7 @@ if (e2ePkg) {
 }
 
 requireText("e2e/playwright.config.ts", 'testDir: "./ui"');
-requireText("e2e/playwright.config.ts", "pnpm -F @html-anything/next build");
+requireText("e2e/playwright.config.ts", "pnpm -F @tracecanvas/next build");
 requireText("e2e/tsconfig.json", '"ui/**/*.ts"');
 requireText("e2e/AGENTS.md", "Do not add Playwright cases under `next/`");
 requireText("pnpm-workspace.yaml", "  - e2e");
@@ -187,12 +187,12 @@ requireText("next/vitest.config.ts", 'environment: "happy-dom"');
 requireText(".github/workflows/ci.yml", "pull_request");
 requireText(".github/workflows/ci.yml", "pnpm install --frozen-lockfile");
 requireText(".github/workflows/ci.yml", "pnpm exec tsx scripts/guard.ts");
-requireText(".github/workflows/ci.yml", "pnpm -F @html-anything/next typecheck");
-requireText(".github/workflows/ci.yml", "pnpm -F @html-anything/e2e typecheck");
-requireText(".github/workflows/ci.yml", "pnpm -F @html-anything/next test");
-requireText(".github/workflows/ci.yml", "pnpm -F @html-anything/next build");
-requireText(".github/workflows/ci.yml", "pnpm -F @html-anything/e2e exec playwright install --with-deps chromium");
-requireText(".github/workflows/ci.yml", "pnpm -F @html-anything/e2e test");
+requireText(".github/workflows/ci.yml", "pnpm -F @tracecanvas/next typecheck");
+requireText(".github/workflows/ci.yml", "pnpm -F @tracecanvas/e2e typecheck");
+requireText(".github/workflows/ci.yml", "pnpm -F @tracecanvas/next test");
+requireText(".github/workflows/ci.yml", "pnpm -F @tracecanvas/next build");
+requireText(".github/workflows/ci.yml", "pnpm -F @tracecanvas/e2e exec playwright install --with-deps chromium");
+requireText(".github/workflows/ci.yml", "pnpm -F @tracecanvas/e2e test");
 
 if (failures.length) {
   console.error("Guard failed:");

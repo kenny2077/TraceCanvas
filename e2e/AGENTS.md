@@ -18,8 +18,8 @@ Follow root repository instructions first when present. This package owns user-l
 Run commands from the repository root:
 
 ```bash
-pnpm -F @html-anything/e2e typecheck
-pnpm -F @html-anything/e2e exec tsx scripts/playwright.ts clean
-pnpm -F @html-anything/e2e exec playwright test -c playwright.config.ts --list
-pnpm -F @html-anything/e2e test
+pnpm -F @tracecanvas/e2e typecheck
+pnpm -F @tracecanvas/e2e exec tsx scripts/playwright.ts clean
+pnpm -F @tracecanvas/e2e exec playwright test -c playwright.config.ts --list
+pnpm -F @tracecanvas/e2e test
 ```
