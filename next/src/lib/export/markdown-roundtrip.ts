@@ -31,7 +31,7 @@ export async function copyAsMarkdown(fullHtml: string): Promise<void> {
   await copyText(htmlToMarkdown(fullHtml));
 }
 
-export function downloadAsMarkdown(fullHtml: string, basename = "html-anything"): void {
+export function downloadAsMarkdown(fullHtml: string, basename = "tracecanvas"): void {
   downloadMarkdown(htmlToMarkdown(fullHtml), basename);
 }
 

@@ -5,7 +5,7 @@ import { copyHtml } from "./clipboard";
 
 /**
  * Take a full HTML document, extract <body> content, inline all CSS via juice,
- * and tag top-level children with data-tool="html-anything" so WeChat trusts the styles.
+ * and tag top-level children with data-tool="tracecanvas" so WeChat trusts the styles.
  * Returns the HTML to be pasted into WeChat editor.
  */
 export function toWechatHtml(fullHtml: string): string {
@@ -31,7 +31,7 @@ export function toWechatHtml(fullHtml: string): string {
   const wrap = document.createElement("div");
   wrap.innerHTML = bodyHtml;
   Array.from(wrap.children).forEach((child) => {
-    child.setAttribute("data-tool", "html-anything");
+    child.setAttribute("data-tool", "tracecanvas");
   });
 
   const tagged = wrap.innerHTML;
@@ -47,7 +47,7 @@ export function toWechatHtml(fullHtml: string): string {
   }
 
   // Wrap in a section element so WeChat treats it as a content block
-  return `<section data-tool="html-anything">${inlined}</section>`;
+  return `<section data-tool="tracecanvas">${inlined}</section>`;
 }
 
 export async function copyToWechat(fullHtml: string): Promise<void> {

@@ -19,7 +19,7 @@ import type { RunStats } from "@/lib/store";
 import type { VerificationReport } from "@/lib/verify/engine";
 import type { RepairResult } from "@/lib/html/types";
 
-const DB_NAME = "html-anything-history";
+const DB_NAME = "tracecanvas-history";
 const DB_VERSION = 2; // v2: added verificationReport, repairResult, analysisSummary
 const STORE = "runs";
 

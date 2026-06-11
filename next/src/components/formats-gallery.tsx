@@ -238,7 +238,7 @@ LIMIT 10;
     description: "Config files — k8s, GitHub Actions, openapi specs.",
     format: "yaml",
     filename: "deploy.yaml",
-    content: `project: html-anything
+    content: `project: tracecanvas
 version: 0.4.0
 description: Anything → beautiful HTML
 

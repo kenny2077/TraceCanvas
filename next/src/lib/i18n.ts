@@ -469,7 +469,7 @@ const en: Dict = {
   "settings.section.deploy.hint": "One-click publishing",
   "settings.deploy.title": "One-click deploy",
   "settings.deploy.subtitle":
-    "Publish the generated HTML to a public URL with one click. Tokens stay on your machine in ~/.html-anything (chmod 600).",
+    "Publish the generated HTML to a public URL with one click. Tokens stay on your machine in ~/.tracecanvas (chmod 600).",
   "settings.deploy.vercel.title": "Vercel",
   "settings.deploy.vercel.tokenLabel": "API token",
   "settings.deploy.vercel.tokenPlaceholder": "vercel_xxx…",
@@ -830,7 +830,7 @@ const zhCN: Dict = {
   "settings.section.deploy.hint": "一键发布",
   "settings.deploy.title": "一键部署",
   "settings.deploy.subtitle":
-    "把生成好的 HTML 一键发布成公网链接。Token 仅本地保存于 ~/.html-anything（chmod 600）。",
+    "把生成好的 HTML 一键发布成公网链接。Token 仅本地保存于 ~/.tracecanvas（chmod 600）。",
   "settings.deploy.vercel.title": "Vercel",
   "settings.deploy.vercel.tokenLabel": "API Token",
   "settings.deploy.vercel.tokenPlaceholder": "vercel_xxx…",

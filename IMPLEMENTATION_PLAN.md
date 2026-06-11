@@ -45,7 +45,7 @@
 - Streams via SSE (start → delta chunks → done)
 - No actual CLI spawn
 
-**Test:** `pnpm -F @html-anything/next test` — add mock agent unit test
+**Test:** `pnpm -F @tracecanvas/next test` — add mock agent unit test
 
 #### 2A.2 Wire Source-Key Rules into Prompt
 **Files to modify:**

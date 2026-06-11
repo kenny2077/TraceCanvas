@@ -5,7 +5,7 @@ import { userSkillsDir, makeSkillId } from "./paths";
 /**
  * Disk layout written by {@link install}:
  *
- *   ~/.html-anything/skills/<package-id>/
+ *   ~/.tracecanvas/skills/<package-id>/
  *     package.json             — install manifest
  *     skills/<original-id>/
  *       SKILL.md

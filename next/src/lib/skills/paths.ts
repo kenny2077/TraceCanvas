@@ -3,14 +3,14 @@ import path from "node:path";
 
 /**
  * User-installed skill packs live outside the repo so they survive `git clean`
- * and aren't accidentally committed. Default location: `~/.html-anything/skills/`.
+ * and aren't accidentally committed. Default location: `~/.tracecanvas/skills/`.
  *
  * Tests override via `HTML_ANYTHING_USER_SKILLS_DIR`.
  */
 export function userSkillsDir(): string {
   const override = process.env.HTML_ANYTHING_USER_SKILLS_DIR;
   if (override) return override;
-  return path.join(os.homedir(), ".html-anything", "skills");
+  return path.join(os.homedir(), ".tracecanvas", "skills");
 }
 
 /** Package id prefix used for namespaced skill ids. Always `pkg-<owner>-<repo>--<originalId>`. */

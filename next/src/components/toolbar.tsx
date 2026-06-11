@@ -134,7 +134,7 @@ function CommunityLinks() {
   return (
     <div className="hidden md:flex items-center gap-1.5">
       <a
-        href="https://github.com/nexu-io/html-anything"
+        href="https://github.com/kenny2077/TraceCanvas"
         target="_blank"
         rel="noreferrer noopener"
         className={linkCls}

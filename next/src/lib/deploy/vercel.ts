@@ -8,7 +8,7 @@ import {
 /**
  * One-shot Vercel preview deployment for a single HTML document. Adapted
  * 1:1 from open-design's `deployToVercel` but with the multi-file resource
- * tree collapsed away — html-anything tasks are always a single
+ * tree collapsed away — TraceCanvas tasks are always a single
  * `index.html` (CSS / images are inlined at convert time).
  */
 
@@ -108,7 +108,7 @@ function deploymentUrlCandidates(...responses: Array<VercelJson | null>): string
 
 // Hobby projects default to Vercel Authentication on every preview, so the
 // *.vercel.app URL 401s for anyone not signed into the deploying account.
-// html-anything's whole UX is "share this link" — opt the freshly created
+// TraceCanvas's whole UX is "share this link" — opt the freshly created
 // project out of protection. Failure here is non-fatal: url-check will still
 // surface a `protected` status with instructions if the link really is locked.
 async function disableVercelDeploymentProtection(
@@ -171,7 +171,7 @@ function safeProjectLabel(raw: string, maxLength: number): string {
 
 export function safeVercelProjectName(raw: string): string {
   return (
-    safeProjectLabel(raw, 80) || `html-anything-${randomUUID().slice(0, 8)}`
+    safeProjectLabel(raw, 80) || `tracecanvas-${randomUUID().slice(0, 8)}`
   );
 }
 
@@ -200,7 +200,7 @@ export async function deployToVercel({
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        name: safeVercelProjectName(`html-anything-${taskId}`),
+        name: safeVercelProjectName(`tracecanvas-${taskId}`),
         files: files.map((f) => ({
           file: f.file,
           data: Buffer.from(f.data).toString("base64"),

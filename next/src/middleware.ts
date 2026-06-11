@@ -17,7 +17,7 @@ export function middleware(req: NextRequest) {
     JSON.stringify({
       error: "Host not allowed",
       hint:
-        "html-anything's API only accepts requests with a loopback Host header (127.0.0.1, localhost, ::1). " +
+        "TraceCanvas's API only accepts requests with a loopback Host header (127.0.0.1, localhost, ::1). " +
         "If you're fronting it behind a different hostname, add it to HTML_ANYTHING_ALLOWED_HOSTS (comma-separated) " +
         "or set HTML_ANYTHING_ALLOW_ANY_HOST=1 if a trusted reverse proxy is terminating Host upstream.",
     }),

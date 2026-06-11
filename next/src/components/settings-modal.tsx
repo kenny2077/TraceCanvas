@@ -636,7 +636,7 @@ function VercelDeployConfig() {
   };
 
   const onClear = async () => {
-    if (!confirm("Clear Vercel token from ~/.html-anything?")) return;
+    if (!confirm("Clear Vercel token from ~/.tracecanvas?")) return;
     setLoading(true);
     setErr(null);
     try {

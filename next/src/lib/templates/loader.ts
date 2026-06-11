@@ -15,7 +15,7 @@ import { findUserSkill, listUserSkills, type UserSkillEntry } from "@/lib/skills
  * routes rescan disk and the client refetches `/api/templates`.
  *
  * Skills installed via the marketplace ({@link listUserSkills}) live under
- * `~/.html-anything/skills/` and are merged into the same registry with
+ * `~/.tracecanvas/skills/` and are merged into the same registry with
  * namespaced ids (`pkg-<owner>-<repo>--<originalId>`).
  */
 

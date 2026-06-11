@@ -234,7 +234,7 @@ export function WelcomeModal({ onClose }: Props) {
           style={{ borderTop: "1px solid var(--line-faint)" }}
         >
           <a
-            href="https://github.com/nexu-io/html-anything"
+            href="https://github.com/kenny2077/TraceCanvas"
             target="_blank"
             rel="noreferrer noopener"
             className="rounded-full px-3 py-1 border transition-colors hover:text-[var(--ink)] hover:border-[var(--ink)]/30"
